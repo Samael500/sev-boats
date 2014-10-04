@@ -2,8 +2,7 @@ test:
 	. venv/bin/activate; nosetests --color --nologcapture sev-boats
 
 ci_test:
-	nosetests --color --nologcapture sev-boats
-	nosetests --with-coverage 
+	nosetests --color --nologcapture --with-coverage sev-boats
 	make pep8
 	make pyflakes
 
