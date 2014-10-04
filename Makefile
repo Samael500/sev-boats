@@ -1,13 +1,13 @@
 test:
-	. venv/bin/activate; nosetests --color --nologcapture
+	. venv/bin/activate; nosetests --color --nologcapture sev-boats
 
 ci_test:
-	nosetests --color --nologcapture --cover-xml
+	nosetests --color --nologcapture --with-coverage sev-boats
 	make pep8
 	make pyflakes
 
 pep8:
-	pep8 --exclude=venv/* --max-line-length=119 --show-source */
+	pep8 --max-line-length=119 --show-source sev-boats/
 
 pyflakes:
-	pylama --skip=venv/* -l pyflakes
+	pylama -l pyflakes sev-boats/
