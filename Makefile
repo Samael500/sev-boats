@@ -2,7 +2,7 @@ test:
 	. venv/bin/activate; nosetests --color --nologcapture
 
 ci_test:
-	nosetests --color --nologcapture
+	nosetests --color --nologcapture --cover-xml
 	make pep8
 	make pyflakes
 
