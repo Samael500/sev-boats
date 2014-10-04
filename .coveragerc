@@ -1,3 +1,5 @@
 [report]
 omit =
     venv/*
+    */python?.?/*
+    */site-packages/*
