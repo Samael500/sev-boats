@@ -2,7 +2,7 @@ test:
 	. venv/bin/activate; nosetests --color --nologcapture sev-boats
 
 ci_test:
-	nosetests --color --nologcapture --with-coverage sev-boats
+	nosetests --with-coverage --cover-package=sev-boats --color sev-boats/
 	make pep8
 	make pyflakes
 
@@ -11,3 +11,4 @@ pep8:
 
 pyflakes:
 	pylama -l pyflakes sev-boats/
+ 
