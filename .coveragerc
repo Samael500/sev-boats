@@ -1,5 +1,8 @@
 [report]
 omit =
     venv/*
+    */settings*
     */python?.?/*
     */site-packages/*
+
+    sevboats/sb.py

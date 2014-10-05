@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
-import settings
-from settings import MESSAGES_DIR
+from sevboats.settings import MESSAGES_DIR
 import os
 import yaml
+
 
 class Message(object):
 
