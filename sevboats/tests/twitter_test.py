@@ -9,7 +9,7 @@ class TestTwitter(unittest.TestCase):
     """ Test twitter class """
 
     def setUp(self):
-        self.twitter = Twitter({})
+        self.twitter = Twitter()
 
 
     def test_twitter_post(self):
