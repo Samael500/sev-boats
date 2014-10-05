@@ -65,3 +65,9 @@ class Twitter:
         for tweet in search_list['statuses']:
             users_ids.append(tweet['user']['id_str'])
         return users_ids
+
+    def follow_search(self):
+        """ Follow for all user in search results """
+        users_ids = self.search_to_list()
+        self.follow_list(users_ids)
+        return users_ids

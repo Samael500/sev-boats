@@ -10,6 +10,8 @@ class TestTwitter(unittest.TestCase):
 
     def setUp(self):
         self.twitter = Twitter()
+        # set query string
+        self.twitter.query_string = '"#test"'
 
     def test_twitter_post_delete(self):
         """ Test twitter post and delete message """
@@ -55,17 +57,23 @@ class TestTwitter(unittest.TestCase):
 
     def test_twitter_search(self):
         """ Test search tweets """
-        # set query string
-        self.twitter.query_string = '"#test"'
         search_list = self.twitter.search()
         for tweet in search_list['statuses']:
             self.assertIn(u'test', tweet['text'].lower())
 
     def test_twitter_search_to_list(self):
         """ Test search tweets """
-        # set query string
-        self.twitter.query_string = '"#test"'
         search_list = self.twitter.search()
         users_ids = self.twitter.search_to_list()
         for tweet in search_list['statuses']:
             self.assertIn(tweet['user']['id_str'], users_ids)
+
+    def test_twitter_follow_search(self):
+        """ Follow to users in search and unfollow now """
+        # follow users
+        users_ids = self.twitter.follow_search()
+        # unfollow this users
+        unfollows = self.twitter.unfollow_list(users_ids)
+        for user_id in unfollows:
+            self.assertIn(user_id, users_ids)
+        self.assertEquals(len(users_ids), len(unfollows))
