@@ -52,3 +52,20 @@ class TestTwitter(unittest.TestCase):
         for user_id in unfollows:
             self.assertIn(user_id, users_ids)
         self.assertEquals(len(follows), len(unfollows))
+
+    def test_twitter_search(self):
+        """ Test search tweets """
+        # set query string
+        self.twitter.query_string = '"#test"'
+        search_list = self.twitter.search()
+        for tweet in search_list['statuses']:
+            self.assertIn(u'test', tweet['text'].lower())
+
+    def test_twitter_search_to_list(self):
+        """ Test search tweets """
+        # set query string
+        self.twitter.query_string = '"#test"'
+        search_list = self.twitter.search()
+        users_ids = self.twitter.search_to_list()
+        for tweet in search_list['statuses']:
+            self.assertIn(tweet['user']['id_str'], users_ids)

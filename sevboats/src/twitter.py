@@ -2,8 +2,9 @@
 
 from settings import TWITTER_OAUTH_INFO
 from twython import Twython
-from datetime import datetime
-from datetime import timedelta
+
+import datetime
+
 
 class Twitter:
 
@@ -30,8 +31,8 @@ class Twitter:
     def search(self, query=None, count=50):
         """ Search tweet with sevboats ref """
         if query is None:
-            since = (datetime.now() - timedelta(days=7)).date().strftime('%Y-%m-%d')
-            query = self.query_string % since
+            since = (datetime.datetime.now() - datetime.timedelta(days=7)).date().strftime('%Y-%m-%d')
+            query = self.query_string % since if 'since:%s' in self.query_string else self.query_string
         return self.twitter.search(q=query, count=count)
 
     def follow(self, user_id):
@@ -60,7 +61,7 @@ class Twitter:
         """ Follow user in search result """
         if search_list is None:
             search_list = self.search()
-        friends_ids = []
+        users_ids = []
         for tweet in search_list['statuses']:
-            friends_ids.append(tweet['user']['id_str'])
-        return friends_ids
+            users_ids.append(tweet['user']['id_str'])
+        return users_ids
