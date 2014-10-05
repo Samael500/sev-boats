@@ -13,4 +13,12 @@ _m = m.get_message()
 
 t.post(_m)
 r = t.post_tweet(_m)
-print (r)
+
+# print r['id_str']
+
+from time import sleep 
+
+# sleep(40)
+
+print (t.delete_tweet(r['id_str']))
+

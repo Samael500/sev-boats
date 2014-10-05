@@ -11,3 +11,7 @@ pep8:
 
 pyflakes:
 	pylama -l pyflakes sevboats/
+
+install:
+	mkdir venv
+	virtualenv --no-site-packages --prompt="(sev-boats)" venv

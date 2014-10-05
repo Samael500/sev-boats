@@ -11,7 +11,11 @@ class Twitter:
 
     def post_tweet(self, message):
         """ Writes message into twitter stream """
-        return self.twitter.update_status(status=message)
+        return self.twitter.update_status(status=message, trim_user=True)
+
+    def delete_tweet(self, tweet_id):
+        """ Remove tweet from timeline """
+        return self.twitter.destroy_status(id=tweet_id, trim_user=True)
 
     def post(self, message):
         """ Writes message into console to test """
