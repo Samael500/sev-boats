@@ -1,10 +1,16 @@
 # -*- coding: utf-8 -*-
 
 from src import messages
+from src.twitter import Twitter
 
-m = messages.Message()
+m = messages.Messenger()
 
 mm = m.get_messages()
 
-for _m in mm:
-    print (_m)
+t = Twitter()
+
+_m = m.get_message()
+
+t.post(_m)
+r = t.post_tweet(_m)
+print (r)

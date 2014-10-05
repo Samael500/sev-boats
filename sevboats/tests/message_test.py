@@ -1,28 +1,67 @@
 # -*- coding: utf-8 -*-
 
 import unittest
-from sevboats.src.messages import Message
+from sevboats.src.messages import Messenger, MiddayGun
 
 
-class TestMessage(unittest.TestCase):
+class TestMessenger(unittest.TestCase):
+
+    """ Test base messenger class """
 
     def setUp(self):
-        self.message = Message()
+        self.messager = Messenger()
 
     def test_message_class(self):
-        self.assertEqual(self.message.filename, '')
-        self.assertEqual(self.message.filename_suffix, '.yaml')
+        """ Check file name and ext default """
+        self.assertEqual(self.messager.filename, '')
+        self.assertEqual(self.messager.filename_suffix, '.yaml')
 
     def test_get_messages_none(self):
-        self.message.filename = 'no_file'
-        self.assertTrue(self.message.get_messages() is None)
+        """ Check get None if no file name """
+        self.messager.filename = 'no_file'
+        self.assertTrue(self.messager.get_messages() is None)
 
     def test_get_messages_path(self):
-        self.assertIn('/sev-boats/sevboats/messages/.yaml', self.message.get_messages_path)
+        """ Check file path for messages file """
+        self.assertIn('/sev-boats/sevboats/messages/.yaml', self.messager.get_messages_path)
 
     def test_get_messages_ok(self):
-        messages = self.message.get_messages()
-        self.assertEqual(u'Тестовый текст 1', messages[0])
-        self.assertEqual(u'Тестовый текст 2', messages[1])
-        self.assertEqual(None, messages[2])
-        self.assertEqual(u'Тестовый текст 4', messages[3])
+        """ Check get correct messages if file exist """
+        messages = self.messager.get_messages()
+        for i in range(len(messages)):
+            self.assertEqual(u'Тестовый текст %d' % (i + 1), messages[i])
+        self.assertEqual(len(messages), 5)
+
+    def test_get_message_rand(self):
+        """ Get random message OK """
+        message = self.messager.get_message()
+        messages = self.messager.get_messages()
+        self.assertIn(message, messages)
+
+    def test_get_message_rand_none(self):
+        """ Get random message None if file no exist """
+        self.messager.filename = 'no_file'
+        self.assertTrue(self.messager.get_message() is None)
+        self.assertTrue(self.messager.get_messages() is None)
+
+
+class TestMiddayGunMessager(unittest.TestCase):
+
+    """ Test Midday Gun messenger class """
+
+    def setUp(self):
+        self.messager = MiddayGun()
+
+    def test_message_class(self):
+        """ Check file name and ext default """
+        self.assertEqual(self.messager.filename, 'midday_gun')
+        self.assertEqual(self.messager.filename_suffix, '.yaml')
+
+    def test_get_messages_none(self):
+        """ Check get None if no file name """
+        self.messager.filename = 'no_file'
+        self.assertTrue(self.messager.get_messages() is None)
+
+    def test_get_messages_path(self):
+        """ Check file path for messages file """
+        self.assertIn('/sev-boats/sevboats/messages/midday_gun.yaml', self.messager.get_messages_path)

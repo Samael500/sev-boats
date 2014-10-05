@@ -1,14 +1,14 @@
 # -*- coding: utf-8 -*-
 
-from sevboats.settings import MESSAGES_DIR
+from settings import MESSAGES_DIR
 import os
 import yaml
 import random
 
 
-class Messager(object):
+class Messenger(object):
 
-    """ Base Messager class to get message from file """
+    """ Base Messenger class to get message from file """
 
     filename = ''
     filename_suffix = '.yaml'
@@ -29,13 +29,13 @@ class Messager(object):
 
     def get_message(self):
         """ Get random message from messages array """
-        messages = get_messages()
+        messages = self.get_messages()
         if messages:
             return random.choice(messages)
         return None
 
 
-class MiddayGun(Messager):
+class MiddayGun(Messenger):
 
     """ Midday gun messanger """
 

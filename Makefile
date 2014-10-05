@@ -11,4 +11,3 @@ pep8:
 
 pyflakes:
 	pylama -l pyflakes sevboats/
- 
