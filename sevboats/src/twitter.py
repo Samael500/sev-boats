@@ -42,16 +42,25 @@ class Twitter:
         """ Un Follow user by id """
         return self.twitter.destroy_friendship(user_id=user_id)
 
-    def follow_list(self, search_list=None):
+    def follow_list(self, friends_ids):
+        """ Follow user in search result """
+        friends = []
+        for user_id in friends_ids:
+            friends.append(self.follow(user_id)['id_str'])
+        return friends
+
+    def unfollow_list(self, friends_ids):
+        """ Un Follow user in ids list """
+        friends = []
+        for user_id in friends_ids:
+            friends.append(self.unfollow(user_id)['id_str'])
+        return friends
+
+    def search_to_list(self, search_list=None):
         """ Follow user in search result """
         if search_list is None:
             search_list = self.search()
         friends_ids = []
         for tweet in search_list['statuses']:
-            friends_ids.append(self.follow(tweet['user']['id_str'])['id_str'])
+            friends_ids.append(tweet['user']['id_str'])
         return friends_ids
-
-    def unfollow_list(self, friends_ids):
-        """ Un Follow user in ids list """
-        for user_id in friends_ids:
-            self.unfollow(user_id)

@@ -28,3 +28,27 @@ class TestTwitter(unittest.TestCase):
         self.assertEquals(tweet['text'], 'unittest')
         self.assertEquals(tweet['id'], 0)
         self.assertEquals(tweet['id_str'], '0')
+
+    def test_twitter_follow(self):
+        """ Follow to user and unfollow now """
+        user_id = '123456789'
+        # follow user with id 123456789
+        follows = self.twitter.follow(user_id)
+        self.assertEquals(follows['id_str'], user_id)
+        # unfollow this user
+        unfollows = self.twitter.unfollow(user_id)
+        self.assertEquals(unfollows['id_str'], user_id)
+        self.assertEquals(follows['id_str'], unfollows['id_str'])
+
+    def test_twitter_follow_list(self):
+        """ Follow to users list and unfollow now """
+        users_ids = ('123456789', )
+        # follow users
+        follows = self.twitter.follow_list(users_ids)
+        for user_id in follows:
+            self.assertIn(user_id, users_ids)
+        # unfollow this users
+        unfollows = self.twitter.unfollow_list(users_ids)
+        for user_id in unfollows:
+            self.assertIn(user_id, users_ids)
+        self.assertEquals(len(follows), len(unfollows))
