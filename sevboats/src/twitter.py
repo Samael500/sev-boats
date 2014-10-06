@@ -6,11 +6,11 @@ from twython import Twython
 import datetime
 
 
-class Twitter:
+class Twitter(object):
 
     """ Class for twitter use """
 
-    query_string = '#севастополь -украина OR катер OR SevastopolBoats OR sevboats :) since:%s lang:ru'
+    query_string = '#севастополь -украина OR северная OR катер OR SevastopolBoats OR sevboats :) since:%s lang:ru'
 
     def __init__(self, auth=TWITTER_OAUTH_INFO):
         self.twitter = Twython(**auth)
@@ -28,7 +28,7 @@ class Twitter:
         print message
         return dict(id=0, id_str='0', text=message)
 
-    def search(self, query=None, count=50):
+    def search(self, query=None, count=10):
         """ Search tweet with sevboats ref """
         if query is None:
             since = (datetime.datetime.now() - datetime.timedelta(days=7)).date().strftime('%Y-%m-%d')
