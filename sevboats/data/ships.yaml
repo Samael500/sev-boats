@@ -1,0 +1,19 @@
+- name: 'ZUYD'
+  MMSI: '272083800'
+  ru_name: 'Зюйд'
+  kind: 'cat'
+
+- name: 'PLUTON'
+  MMSI: '272083600'
+  ru_name: 'Плутон'
+  kind: 'cat'
+
+- name: 'ADMIRAL ISTOMIN'
+  MMSI: '272124300'
+  ru_name: 'Адмирал Истомин'
+  kind: 'par'
+
+- name: 'G. OVCHINNIKOV'
+  MMSI: '272083500'
+  ru_name: 'Григорий Овчинников'
+  kind: 'cat'
