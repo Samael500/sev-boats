@@ -1,8 +1,7 @@
 import urllib2
 from bs4 import BeautifulSoup
 import re
-
-# from src.coordinates import Coordinates
+import time
 
 
 class Scrapper(object):
@@ -10,20 +9,26 @@ class Scrapper(object):
     """ Parse data from marinetraffic to get ship info """
 
     ais_domain_url = r'http://www.marinetraffic.com/en/ais/'
-    ships_list_url = r'%sindex/ships/range/port_id:883/ship_type:6/flag:UA/page:{page}' % ais_domain_url
-    ship_info_url = r'%sindex/ships/range/shipname:{NAME}/mmsi:{MMSI}' % ais_domain_url
-    ship_details_url = r'%sdetails/ships/{MMSI}/vessel:{NAME}' % ais_domain_url
+    index_prefix = r'%sindex/ships/range/' % ais_domain_url
+    details_prefix = r'%sdetails/ships/' % ais_domain_url
+
+    ships_list_url = r'%sport_id:883/ship_type:6/flag:UA/per_page:50/page:{page}' % index_prefix
+    ship_info_url = r'%sshipname:{NAME}/mmsi:{MMSI}' % index_prefix
+    ship_details_url = r'%s{MMSI}/vessel:{NAME}' % details_prefix
+
+    # timeout wit page request in seconds
+    timeout = 10
 
     def __init__(self):
         # create urllib2 opener, with costom user agent
         self.opener = urllib2.build_opener()
         # ~WARNING~ Need add normal user agents
-        self.opener.addheaders = [('User-Agent', r'sevboats')]
+        self.opener.addheaders = [('User-Agent', '')]
 
     def scrape_ship(self, ship_name, ship_mmsi):
         """
         Scrape one ship data from AIS.
-        return ( speed, course, (latitude, longitude), delay ) if error occured return None
+        return (speed, course, (latitude, longitude), delay) if error occured return None
         """
         url = self.ship_info_url.format(NAME=ship_name, MMSI=ship_mmsi).replace(' ', '+')
 
@@ -36,36 +41,47 @@ class Scrapper(object):
         if data_row is not None:
             return self._get_data(data_row)
 
-    # def scrape_all_ships(self, ship_names):
-    #     # TODO: Optimize parsing to reduce the number of processed items
-    #     '''
-    #     Scrape ships from array ship_name.
-    #     return hash { name1 : (speed, course, (latitude, longitude) ), ...}
-    #     if error occured while procssing http connection or html parsing return empty hash.
-    #     if error occured while processing ship, than ship is not included in the result.
-    #     '''
-    #     url = r"http://www.marinetraffic.com/ais/index/ships/range/port_id:883/ship_type:6/per_page:0"
-    #     data = []
-    #     res = {}
+    def scrape_ships_list(self, ships_mmsi):
+        """
+        Scrape ships from array ships_mmsi.
+        return hash { mmsi : (speed, course, (latitude, longitude), delay ), ...}
+        if error occured while procssing http connection or html parsing return empty hash.
+        if error occured while processing ship, than ship is not included in the result.
+        """
 
-    #     #for name in ship_names:
-    #     #    res[name] = None
+        data = []
+        result = {}
 
-    #     try:
-    #         soup = BeautifulSoup(urllib2.urlopen(url).read())
-    #         raw_data = soup.find_all("a")
-    #         for row in raw_data:
-    #             if row.text in ship_names:
-    #                 data.append( (row.text.encode('utf-8',"ignore"), row.find_parent("tr").find_all("td") ) )
-    #     except :#(AttributeError, urllib2.URLError):
-    #         data = None
-    #     if data != None:
-    #         for row in data:
-    #             #print row[1][3]
-    #             coord = self._get_data(row[1])
-    #             if coord != None:
-    #                 res[row[0]] = coord
-    #     return res
+        try:
+            # get first page url
+            url = self.ships_list_url.format(page=1)
+            soup = BeautifulSoup(self.opener.open(url).read())
+            # get page all count
+            page_all = soup.find('div', {'class': 'col-xs-6 page-nav'}).encode('utf-8')
+            pattern = re.compile(r'</form>.+of.+(\d+)<span')
+            search = pattern.search(page_all)
+            count = int(search.group(1)) if search else 1
+            # get raw_data of first page
+            raw_data = soup.find_all('td', {'data-column': '20'})
+            # get raw_data from other pages
+            for i in range(2, count + 1):
+                time.sleep(self.timeout)
+                url = self.ships_list_url.format(page=i)
+                soup = BeautifulSoup(self.opener.open(url).read())
+                raw_data += soup.find_all('td', {'data-column': '20'})
+            # filter raw data - only neaded ships
+            for row in raw_data:
+                if row.text in ships_mmsi:
+                    data.append((row.text.encode('utf-8'), row.find_parent('tr').find_all('td')))
+        except (AttributeError, urllib2.URLError):
+            data = None
+
+        if data is not None:
+            for row in data:
+                coord_info = self._get_data(row[1])
+                if coord_info is not None:
+                    result[row[0]] = coord_info
+        return result
 
     def _get_data(self, row):
         """

@@ -17,3 +17,28 @@
   MMSI: '272083500'
   ru_name: 'Григорий Овчинников'
   kind: 'cat'
+
+- name: 'UPITER'
+  MMSI: '272083700'
+  ru_name: 'Юпитер'
+  kind: 'cat'
+
+- name: 'MERKURIY'
+  MMSI: '272092200'
+  ru_name: 'Меркурий'
+  kind: 'cat'
+
+- name: 'NORD'
+  MMSI: '272105500'
+  ru_name: 'Норд'
+  kind: 'cat'
+
+- name: 'KAP-LEYT. KAZARSKIY'
+  MMSI: '272126200'
+  ru_name: 'Капитан-лейтенант Казарский'
+  kind: 'par'
+
+- name: 'ADMIRAL LAZAREV'
+  MMSI: '272124400'
+  ru_name: 'Капитан-лейтенант Казарский'
+  kind: 'par'

@@ -53,3 +53,31 @@
 # # # print t.follow('2635565586')
 # # # print t.unfollow('2635565586')
 
+
+
+import settings
+import os
+from src.scrapper import Scrapper
+
+scrap = Scrapper()
+scrap.timeout = 0
+scrap.ships_list_url = 'file:///%s' % os.path.join(settings.BASE_DIR, 'sevboats/tests/test_data/list-page:{page}.html')
+scrap.ship_info_url = 'file:///%s' % os.path.join(settings.BASE_DIR, 'sevboats/tests/test_data/list.html')
+
+# print scrap.ships_list_url
+
+x = scrap.scrape_ships_list(['272083500', '272083700', '272083800', '272092200', '272105500', '272124300', ])
+
+for key, value in x.iteritems():
+    print key, value
+print '--------------------------------------------------'
+scrap.ships_list_url = 'file:///%s' % os.path.join(settings.BASE_DIR, 'sevboats/tests/test_data/list.html')
+x = scrap.scrape_ships_list(['272083500', '272083700', '272083800', '272092200', '272105500', '272124300', ])
+
+for key, value in x.iteritems():
+    print key, value
+
+
+x = scrap.scrape_ship('OST', '272093900')
+print x
+

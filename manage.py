@@ -24,5 +24,5 @@ if __name__ == '__main__':
 
     try:
         scheduler.start()
-    except KeyboardInterrupt, SystemExit:
+    except (KeyboardInterrupt, SystemExit):
         pass
