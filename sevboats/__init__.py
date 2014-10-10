@@ -13,6 +13,6 @@
 #######################################################################################
 """
 
-from settings import *
-from src.twitter import Twitter
-from src.messages import MiddayGun
+from sevboats.settings import *              # noqa
+from sevboats.src.twitter import Twitter     # noqa
+from sevboats.src.messages import MiddayGun  # noqa
