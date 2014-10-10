@@ -10,6 +10,7 @@ if path not in sys.path:
     sys.path.insert(0, path)
 
 MESSAGES_DIR = join(BASE_DIR, 'sevboats', 'messages')
+DATA_DIR = join(BASE_DIR, 'sevboats', 'data')
 
 # Twitter authentication information
 # must be redefined in settings local
