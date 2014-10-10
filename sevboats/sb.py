@@ -1,27 +1,13 @@
 # # -*- coding: utf-8 -*-
 
-# from src.decorators import run_every
+# from src.twitter import Twitter
 
-# @run_every(seconds=1)
-# def print_f():
-#     print "function is I"
+# t = Twitter()
 
-# print_f()
+# _m = '012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234[140]'
 
-
-# # from src import messages
-# # from src.twitter import Twitter
-
-# # m = messages.Messenger()
-
-# # mm = m.get_messages()
-
-# # t = Twitter()
-
-# # _m = m.get_message()
-
-# # # t.post(_m)
-# # # r = t.post_tweet(_m)
+# r = t.post_tweet(_m)
+# print r
 
 # # # print r['id_str']
 
@@ -61,23 +47,34 @@ from src.scrapper import Scrapper
 
 scrap = Scrapper()
 scrap.timeout = 0
-scrap.ships_list_url = 'file:///%s' % os.path.join(settings.BASE_DIR, 'sevboats/tests/test_data/list-page:{page}.html')
-scrap.ship_info_url = 'file:///%s' % os.path.join(settings.BASE_DIR, 'sevboats/tests/test_data/list.html')
+# scrap.ships_list_url = 'file:///%s' % os.path.join(settings.BASE_DIR, 'sevboats/tests/test_data/list-page:{page}.html')
+# scrap.ship_info_url = 'file:///%s' % os.path.join(settings.BASE_DIR, 'sevboats/tests/test_data/list.html')
 
-# print scrap.ships_list_url
+# # print scrap.ships_list_url
 
-x = scrap.scrape_ships_list(['272083500', '272083700', '272083800', '272092200', '272105500', '272124300', ])
-
-for key, value in x.iteritems():
-    print key, value
-print '--------------------------------------------------'
+mmsi_s = ['272083800', '272083600', '272093900', '272124300', '272083500', '272083700', '272092200', '272105500', '272126200', '272124400', ]
 scrap.ships_list_url = 'file:///%s' % os.path.join(settings.BASE_DIR, 'sevboats/tests/test_data/list.html')
-x = scrap.scrape_ships_list(['272083500', '272083700', '272083800', '272092200', '272105500', '272124300', ])
 
-for key, value in x.iteritems():
-    print key, value
+# x = scrap.scrape_ships_list(mmsi_s)
+
+# for key, value in x.iteritems():
+#     print key, value
+# print '--------------------------------------------------'
+x = scrap.scrape_ships_list(mmsi_s)
+
+# for key, value in x.iteritems():
+#     print key, value
 
 
-x = scrap.scrape_ship('OST', '272093900')
-print x
+# x = scrap.scrape_ship('OST', '272093900')
+# print x
 
+
+from src.ships import ShipsContainer
+
+sc = ShipsContainer()
+
+sc.get_ships()
+
+sc.update_ships(x)
+sc.print_ships
