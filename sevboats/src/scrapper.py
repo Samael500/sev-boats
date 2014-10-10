@@ -16,7 +16,7 @@ class Scrapper(object):
     ship_info_url = r'%sshipname:{NAME}/mmsi:{MMSI}' % index_prefix
     ship_details_url = r'%s{MMSI}/vessel:{NAME}' % details_prefix
 
-    # timeout wit page request in seconds
+    # timeout with page request in seconds
     timeout = 10
 
     def __init__(self):
@@ -111,7 +111,7 @@ class Scrapper(object):
             # get time delay info
             raw_delay = row[RECEIVED].find('span')['title'].encode('utf-8')
             pattern = re.compile(r'(\d+)s')
-            delay = float(pattern.search(raw_delay).group(1))
+            delay = int(pattern.search(raw_delay).group(1))
             # return result
             return (speed, course, (latitude, longitude), delay)
         except (AttributeError):

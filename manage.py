@@ -12,7 +12,8 @@ twitter = sevboats.Twitter()
 middaygun = sevboats.MiddayGun()
 
 # def functions
-@scheduler.scheduled_job('cron', hour='12', second='5', id='middaygun')
+
+@scheduler.scheduled_job('cron', hour='12', minute='0', second='5', id='middaygun')
 def middaygun_msg():
     """ Post middaygun messages """
     return twitter.post_tweet(middaygun.get_message())
