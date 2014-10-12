@@ -5,3 +5,4 @@ pep8==1.5.7
 pylama==6.0.1
 coveralls==0.4.2
 twython==3.1.2
+beautifulsoup4==4.3.2
