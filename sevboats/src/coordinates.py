@@ -16,11 +16,13 @@ class Coordinates:
         self.latitude = latitude
         self.longitude = longitude
 
+    @staticmethod
     def det(a, b, c):
         """ Calculate determinant for given points """
         return a.latitude * (b.longitude - c.longitude) + b.latitude * (c.longitude - a.longitude) + \
             c.latitude * (a.longitude - b.longitude)
 
+    @staticmethod
     def square(a, b, c):
         """ Calculate the Polygon of a triangle for given points - matrix solution calc det with div 2 """
         return abs(Coordinates.det(a, b, c)) / 2.
@@ -62,6 +64,7 @@ class Coordinates:
     def __str__(self):
         return "latitude: {0}, longitude: {1}".format(self.latitude, self.longitude)
 
+    @staticmethod
     def scalar(start, dest, course):
         # phi = cours to radian Decart angle
         phi = (450 - course) % 360  # grad
@@ -123,7 +126,6 @@ class Polygon:
         self.length = len(points)
         self.start_point()
 
-    @property
     def start_point(self):
         """ Regroups the point of the polygon for the clockwise bottom left """
         zero_id = 0   # start poin pointer
@@ -155,7 +157,8 @@ class Polygon:
                 is_in = not is_in
         return (Polygon.POLYGON_OUTSIDE, Polygon.POLYGON_INSIDE)[is_in]
 
-    def _edge_type(self, point, edge):
+    @staticmethod
+    def _edge_type(point, edge):
         """ Determines how towards the point is an edge """
         start, end = edge
         pos = Polygon._classify(point, start, end)
@@ -165,24 +168,25 @@ class Polygon:
         if (pos == Polygon.POINT_RIGHT):
             return (Polygon.EDGE_INESSENTIAL, Polygon.EDGE_CROSSING)[
                 (end.longitude < point.longitude) and (point.longitude <= start.longitude)]
-        if (pos == Polygon.POINT_BETWEEN) or (pos == Polygon.POINT_ORIGIN) or (pos == Polygon.POINT_DESTINATION):
+        if pos in (Polygon.POINT_BETWEEN, Polygon.POINT_ORIGIN, Polygon.POINT_DESTINATION):
             return Polygon.EDGE_TOUCHING
         # total elif - edge is inessential
         return Polygon.EDGE_INESSENTIAL
 
+    @staticmethod
     def _classify(point, start, end):
         a = end - start
         b = point - start
         sa = a.latitude * b.longitude - b.latitude * a.longitude
 
-        if (sa > 0.0) :
+        if (sa > 0.0):
             return Polygon.POINT_LEFT
-        elif (sa < 0.0) :
+        elif (sa < 0.0):
             return Polygon.POINT_RIGHT
 
-        if (a.latitude * b.latitude < 0.0) or (a.longitude * b.longitude < 0.0) :
+        if (a.latitude * b.latitude < 0.0) or (a.longitude * b.longitude < 0.0):
             return Polygon.POINT_BEHIND
-        if (a.length() < b.length()):
+        if (a.length < b.length):
             return Polygon.POINT_BEYOND
         if (start == point):
             return Polygon.POINT_ORIGIN
