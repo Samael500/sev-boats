@@ -58,3 +58,6 @@ venv/
 
 # settings local
 settings_local.py
+
+# for testing and debug
+sevboats/sb.py

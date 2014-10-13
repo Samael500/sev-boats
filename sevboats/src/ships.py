@@ -11,13 +11,13 @@ class Ship(object):
     """ Ship class """
 
     # Vessel kind constants
-    KIND_BOAT = 'boat'
-    KIND_FERRY = 'ferry'
+    KIND_BOAT = 'BOAT'
+    KIND_FERRY = 'FERRY'
     # Vessel status constants
-    STATUS_ONLINE = 'online'
-    STATUS_OFFLINE = 'offline'
-    STATUS_INDEADEND = 'indeadend'
-    STATUS_DEAD_PING = 'dead_ping'
+    STATUS_ONLINE = 'ONLINE'
+    STATUS_OFFLINE = 'OFFLINE'
+    STATUS_INDEADEND = 'INDEADEND'
+    STATUS_DEAD_PING = 'DEAD_PING'
     _STATUS_DEFAULT = STATUS_OFFLINE
     # Timelimit for dead ping in seconds
     DEAD_PING_TIMELIMIT = 35 * 60
