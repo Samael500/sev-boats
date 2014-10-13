@@ -2,12 +2,14 @@
 
 import unittest
 from sevboats.src.twitter import Twitter
+from settings import DEBUG
 
 
 class TestTwitter(unittest.TestCase):
 
     """ Test twitter class """
 
+    @unittest.skipIf(DEBUG, "Don't test when debug")
     def setUp(self):
         self.twitter = Twitter()
         # set query string
@@ -72,6 +74,16 @@ class TestTwitter(unittest.TestCase):
         """ Follow to users in search and unfollow now """
         # follow users
         users_ids = self.twitter.follow_search()
+        # unfollow this users
+        unfollows = self.twitter.unfollow_list(users_ids)
+        for user_id in unfollows:
+            self.assertIn(user_id, users_ids)
+        self.assertEquals(len(users_ids), len(unfollows))
+
+    def test_twitter_follow_followers(self):
+        """ Follow to followers and unfollow now """
+        # follow users
+        users_ids = self.twitter.follow_followers()
         # unfollow this users
         unfollows = self.twitter.unfollow_list(users_ids)
         for user_id in unfollows:

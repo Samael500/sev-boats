@@ -41,40 +41,53 @@
 
 
 
-import settings
-import os
-from src.scrapper import Scrapper
+# import settings
+# import os
+# from src.scrapper import Scrapper
 
-scrap = Scrapper()
-scrap.timeout = 0
-# scrap.ships_list_url = 'file:///%s' % os.path.join(settings.BASE_DIR, 'sevboats/tests/test_data/list-page:{page}.html')
-# scrap.ship_info_url = 'file:///%s' % os.path.join(settings.BASE_DIR, 'sevboats/tests/test_data/list.html')
+# scrap = Scrapper()
+# scrap.timeout = 0
+# # scrap.ships_list_url = 'file:///%s' % os.path.join(settings.BASE_DIR, 'sevboats/tests/test_data/list-page:{page}.html')
+# # scrap.ship_info_url = 'file:///%s' % os.path.join(settings.BASE_DIR, 'sevboats/tests/test_data/list.html')
 
-# # print scrap.ships_list_url
+# # # print scrap.ships_list_url
 
-mmsi_s = ['272083800', '272083600', '272093900', '272124300', '272083500', '272083700', '272092200', '272105500', '272126200', '272124400', ]
-scrap.ships_list_url = 'file:///%s' % os.path.join(settings.BASE_DIR, 'sevboats/tests/test_data/list.html')
+# mmsi_s = ['272083800', '272083600', '272093900', '272124300', '272083500', '272083700', '272092200', '272105500', '272126200', '272124400', ]
+# scrap.ships_list_url = 'file:///%s' % os.path.join(settings.BASE_DIR, 'sevboats/tests/test_data/list.html')
 
+# # x = scrap.scrape_ships_list(mmsi_s)
+
+# # for key, value in x.iteritems():
+# #     print key, value
+# # print '--------------------------------------------------'
 # x = scrap.scrape_ships_list(mmsi_s)
 
-# for key, value in x.iteritems():
-#     print key, value
-# print '--------------------------------------------------'
-x = scrap.scrape_ships_list(mmsi_s)
-
-# for key, value in x.iteritems():
-#     print key, value
+# # for key, value in x.iteritems():
+# #     print key, value
 
 
-# x = scrap.scrape_ship('OST', '272093900')
-# print x
+# # x = scrap.scrape_ship('OST', '272093900')
+# # print x
 
 
-from src.ships import ShipsContainer
+# from src.ships import ShipsContainer
 
-sc = ShipsContainer()
+# sc = ShipsContainer()
 
-sc.get_ships()
+# sc.get_ships()
 
-sc.update_ships(x)
-sc.print_ships
+# sc.update_ships(x)
+# sc.print_ships
+
+
+from src.twitter import Twitter
+
+t = Twitter()
+
+res = t.follow_followers()
+import time
+time.sleep(90)
+
+t.unfollow_list(res)
+
+print res

@@ -20,6 +20,9 @@ TWITTER_OAUTH_INFO = dict(
     oauth_token='Access Token',
     oauth_token_secret='Access Token Secret', )
 
+# if is debug
+DEBUG = False
+
 try:
     from settings_local import *  # noqa
 except ImportError:
