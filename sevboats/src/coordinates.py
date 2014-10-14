@@ -3,7 +3,7 @@
 from math import pi, sin, cos, acos, sqrt
 
 
-class Coordinates:
+class Coordinates(object):
 
     """ Coordinates class. With math operators """
 
@@ -98,7 +98,7 @@ class Coordinates:
         return self.longitude
 
 
-class Polygon:
+class Polygon(object):
 
     """ Polygon class """
 
