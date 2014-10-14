@@ -78,7 +78,6 @@ class Ship(object):
     def __str__(self):
         return '{name}: status: {status}'.format(name=self.name, status=self.status)
 
-    @property
     def _reset(self):
         """ Set all dynamic info as None """
         self.coordinates = None
@@ -92,7 +91,7 @@ class Ship(object):
         if no data - set offline and return
         """
         if data is None:
-            self._reset
+            self._reset()
             self.update_status()
             return
         # magic numders
@@ -117,11 +116,23 @@ class Ship(object):
             status_new = Ship.STATUS_OFFLINE
         elif self.delay > Ship.DEAD_PING_TIMELIMIT:
             status_new = Ship.STATUS_DEAD_PING
+        elif self.check_deadend():
+            status_new = Ship.STATUS_INDEADEND
         else:
             status_new = Ship.STATUS_ONLINE
-        # NEED CHECK DEAD END
-        # NEED ADD CHANGE STATUS from A - to B message
         self.status = status_new
+
+    def distance(self, point):
+        """ Get distance between two points (self.coordinates, point-destination) """
+        return (point - self.coordinates).length
+
+    def check_deadend(self):
+        """ Check are ship in dead end """
+        if (deadzone.area.is_inside(self.coordinates)):
+            return ((self.speed < MN.STOP) or
+                    (self.distance(deadzone.mark) < MN.DEADEND) or
+                    (self.viewangle(deadzone.mark)))
+        return False
 
 
 class ShipsContainer(object):
@@ -169,7 +180,6 @@ class ShipsContainer(object):
         for name, ship in self.container.iteritems():
             ship.update(ais_data_list.get(ship.mmsi))
 
-    @property
     def print_ships(self):
         for name, ship in self.container.iteritems():
             print ship
