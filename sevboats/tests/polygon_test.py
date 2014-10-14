@@ -1,12 +1,8 @@
 # -*- coding: utf-8 -*-
 
 import unittest
-import os
-import yaml
-from random import uniform
 
 from sevboats.src.coordinates import Coordinates, Polygon
-from settings import BASE_DIR
 
 
 class TestPolygon(unittest.TestCase):
@@ -115,12 +111,11 @@ class TestPolygon(unittest.TestCase):
         self.assertEquals(Polygon._edge_type(p, (A, B)), Polygon.EDGE_INESSENTIAL)
 
     def get_polygon(self):
-        # get polygon from file
-        file_path = os.path.join(BASE_DIR, 'sevboats/tests/test_data/polygon.yaml')
-        with open(file_path, 'r') as polygon_file:
-            points = []
-            for point in yaml.load(polygon_file):
-                points.append(Coordinates(**point))
+        points = []
+        for point in (
+                (1.40, 3.58), (5.96, 2.46), (4.64, 1.04), (5.00, -2.0),
+                (1.10, -0.7), (2.70, 1.72), (4.00, 2.00), ):
+            points.append(Coordinates(*point))
         return points
 
     def test_polygon_init(self):
