@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from coordinates import Polygon
+from ships import Ship
 
 
 class Pier(object):
@@ -21,6 +22,9 @@ class Pier(object):
     def __str__(self):
         return 'pier: {name}; orientir mark: {mark}'.format(name=self.name, mark=self.mark)
 
+    def is_inside(self, ship):
+        return self.area.is_inside(ship.coordinates)
+
 
 class Route(object):
 
@@ -40,6 +44,9 @@ class Route(object):
     def __str__(self):
         return 'route: {name};'.format(name=self.name)
 
+    def is_inside(self, ship):
+        return self.bay.is_inside(ship.coordinates)
+
     def verification(self, ship):
         """ Checks Is the ship on the route """
         if not self.bay.is_inside(ship.coordinates):
@@ -47,7 +54,7 @@ class Route(object):
         else:
             count = 1
 
-        if (ship.speed < MN.STOP):
+        if (ship.speed < Ship.STOP_SPEED):
             for pier in self.piers:
                 if pier.area.is_inside(ship.coordinates):
                     return MN.TRUEPOS

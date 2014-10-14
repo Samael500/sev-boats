@@ -19,8 +19,12 @@ class Ship(object):
     STATUS_INDEADEND = 'INDEADEND'
     STATUS_DEAD_PING = 'DEAD_PING'
     _STATUS_DEFAULT = STATUS_OFFLINE
-    # Timelimit for dead ping in seconds
-    DEAD_PING_TIMELIMIT = 35 * 60
+    # Constants used ship
+    DEAD_PING_TIMELIMIT = 35 * 60  # Timelimit for dead ping in seconds
+    STOP_SPEED = 0.55              # minimal cignificant speed khot
+    VIEWANGLE = 80                 # angle at which it is considered that the boat went to target
+    DELTA = 0.0025                 # distance to determinate next pier
+    DEADEND_DISTANCE = 0.0090      # distancedistance to deadend place
 
     def __init__(self, mmsi, name, ru_name, kind, speed=None, course=None, coordinates=None, delay=None):
         """
@@ -128,9 +132,9 @@ class Ship(object):
 
     def check_deadend(self):
         """ Check are ship in dead end """
-        if (deadzone.area.is_inside(self.coordinates)):
-            return ((self.speed < MN.STOP) or
-                    (self.distance(deadzone.mark) < MN.DEADEND) or
+        if (deadzone.is_inside(self)):
+            return ((self.speed < Ship.STOP_SPEED) or
+                    (self.distance(deadzone.mark) < Ship.DEADEND_DISTANCE) or
                     (self.viewangle(deadzone.mark)))
         return False
 
