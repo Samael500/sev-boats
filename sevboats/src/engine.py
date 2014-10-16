@@ -1,32 +1,32 @@
 # -*- coding: utf-8 -*-
 
-from sevboats.src.ships import ShipsContainer, Ship
-from sevboats.src.scrapper import Scrapper
-from sevboats.src.kmlparser import KmlParser
+from .ships import ShipsContainer, Ship
+from .shiptracks import RoutesContainer
+from .scrapper import Scrapper
 
 
-class StandaloneLazy(object):
+class SingletonLazy(object):
 
-    _fleet = None
-    _ais_scrapper = None
+    @staticmethod
+    def get(cls, *args, **kwargs):
+        if not hasattr(SingletonLazy, cls.__name__):
+            setattr(SingletonLazy, cls.__name__, cls(*args, **kwargs))
+        return getattr(SingletonLazy, cls.__name__)
 
-    # ... ... ...
-
-    @property
     @staticmethod
     def fleet():
-        if StandaloneLazy._fleet is None:
-            StandaloneLazy._fleet = ShipsContainer()
-        return StandaloneLazy._fleet
+        return SingletonLazy.get(ShipsContainer)
 
-    @property
     @staticmethod
     def ais_scrapper():
-        if StandaloneLazy._ais_scrapper is None:
-            StandaloneLazy._ais_scrapper = Scrapper()
-        return StandaloneLazy._ais_scrapper
+        return SingletonLazy.get(Scrapper)
 
-SlL = StandaloneLazy
+    @staticmethod
+    def routes():
+        return SingletonLazy.get(RoutesContainer)
+
+
+SL = SingletonLazy
 
 
 def loadship():
