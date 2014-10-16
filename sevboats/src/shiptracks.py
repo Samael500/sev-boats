@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 
-from coordinates import Polygon
+from xml.dom.minidom import parse
+from coordinates import Polygon, Coordinates
 from ships import Ship
+from settings import DATA_DIR
 
 
 class Pier(object):
@@ -63,3 +65,64 @@ class Route(object):
             count += self.bay.is_inside(point)
 
         return count
+
+
+class RoutesContainer(object):
+
+    """ The container for save routes """
+
+    container = []
+    deadend = None
+
+    def __init__(self):
+        """ Create new instance and parse all bay info """
+        for name in (
+            'Gorod - Severnaja', 'Artbuhta - Severnaja', 'Artbuhta - Radiogorka',
+                'Gorod - Gollandija - Inkerman', 'Gorod - Avlita', ):
+            container.append(Route(self.parse_area(name)))
+
+        piers = (
+            ('Grafskaja pristan', 'Severnaja kater'),
+            ('Art buhta parom', 'Severnaja parom'),
+            ('Art buhta kater', 'Radiogorka'),
+            ('Pirs u porta', 'Apolonovka', 'Gollandija', 'Ugolnaja', 'Inkerman - 1', 'Inkerman - 2', ),
+            ('Pirs u porta', 'Apolonovka', 'Avlita'), )
+        # add piers to routes
+        for i in xrange(len(piers)):
+            for name in piers[i]:
+                self.container[i].piers.append(Pier(self.parse_pier(name)))
+        # get deadend
+        self.deadend = self.parse_pier('Dead end')
+
+    def get_route_path(self, filename):
+        """ Return file path to self route file """
+        return os.path.join(DATA_DIR, 'bay', filename + '.kml')
+
+    def parse_area(self, filename):
+        """
+        Parse coordinate from klm file.
+        return: str_name, [Coordinates(latitude, longitude)]
+        """
+        placemark = parse(self.get_route_path(filename)).getElementsByTagName("Placemark")[0]        
+        coordinates = placemark.getElementsByTagName("coordinates")[0].childNodes[0].nodeValue
+        #Warning ENCODE CP 866 
+        name = placemark.getElementsByTagName("name")[0].childNodes[0].nodeValue#.encode("CP866")
+        polygon = []
+        for coord in coordinates.split():
+            #print "#", coord, "#"
+            longitude, latitude, altitude = (float(c) for c in coord.split(',') if c != '')
+            polygon.append(Coordinates(latitude, longitude))
+        return name, Area(polygon)
+
+    def parse_pier(self, filename):
+        '''
+        Parse coordinate from klm file.
+        return: (str_name, [Coordinates(latitude, longitude)], Coordinates(latitude, longitude) )
+        '''
+        LookAt = parse(self.get_route_path(filename)).getElementsByTagName("LookAt")[0]
+        latitude = float(LookAt.getElementsByTagName("latitude")[0].childNodes[0].nodeValue)
+        longitude = float(LookAt.getElementsByTagName("longitude")[0].childNodes[0].nodeValue)
+        mark = Coordinates(latitude, longitude)
+
+        area = self.parse_area(filename)
+        res = area[0], area[1], mark
