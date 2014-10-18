@@ -1,9 +1,14 @@
 # -*- coding: utf-8 -*-
 
-from settings import DATA_DIR
+from settings import DATA_DIR, PERIOD, UTC_OFFSET
+from datetime import datetime, timedelta
 import os
 import yaml
 import random
+
+from .coordinates import Coordinates
+from .engine import SingletonLazy
+deadzone = SingletonLazy.deadend
 
 
 class Ship(object):
@@ -20,11 +25,12 @@ class Ship(object):
     STATUS_DEAD_PING = 'DEAD_PING'
     _STATUS_DEFAULT = STATUS_OFFLINE
     # Constants used ship
-    DEAD_PING_TIMELIMIT = 35 * 60  # Timelimit for dead ping in seconds
-    STOP_SPEED = 0.55              # minimal cignificant speed khot
-    VIEWANGLE = 80                 # angle at which it is considered that the boat went to target
-    DELTA = 0.0025                 # distance to determinate next pier
-    DEADEND_DISTANCE = 0.0090      # distancedistance to deadend place
+    DEAD_PING_TIMELIMIT = 35 * 60   # Timelimit for dead ping in seconds - 35 minutes
+    STOP_SPEED = 0.55               # minimal cignificant speed khot
+    VIEWANGLE = 80                  # angle at which it is considered that the boat went to target
+    DELTA = 0.0025                  # distance to determinate next pier ~ 25 m
+    DEADEND_DISTANCE = 0.0090       # distancedistance to deadend place ~ 900 m
+    MOVING_LENGTH = 0.005 * PERIOD  # minimal cignificant length of ship track on last hour ~ 500 m / per hours
 
     def __init__(self, mmsi, name, ru_name, kind, speed=None, course=None, coordinates=None, delay=None):
         """
@@ -49,6 +55,7 @@ class Ship(object):
         self.course = course
         self.coordinates = coordinates
         self.delay = delay
+        self.lastpos = []
         # status info
         self.status = Ship._STATUS_DEFAULT
 
@@ -77,10 +84,10 @@ class Ship(object):
         return self.kind == Ship.KIND_FERRY
 
     def __unicode__(self):
-        return u'{ru_name}: {mmsi}'.format(ru_name=self.ru_name, mmsi=self.mmsi)
+        return u'{ru_name}: {mmsi} - {status}'.format(ru_name=self.ru_name, mmsi=self.mmsi, status=self.status)
 
     def __str__(self):
-        return '{name}: status: {status}'.format(name=self.name, status=self.status)
+        return '{name}: {status}'.format(name=self.name, status=self.status)
 
     def _reset(self):
         """ Set all dynamic info as None """
@@ -106,7 +113,7 @@ class Ship(object):
         # update data
         self.speed = data[SPEED]
         self.course = data[COURSE]
-        self.coordinates = data[COORDINATES]
+        self.coordinates = Coordinates(*data[COORDINATES])
         self.delay = data[DELAY]
         # update status
         self.update_status()
@@ -130,13 +137,45 @@ class Ship(object):
         """ Get distance between two points (self.coordinates, point-destination) """
         return (point - self.coordinates).length
 
+    def viewangle(self, point):
+        return self.angle(point) < Ship.VIEWANGLE
+
     def check_deadend(self):
         """ Check are ship in dead end """
-        if (deadzone.is_inside(self)):
+        if (deadzone().is_inside(self)):
             return ((self.speed < Ship.STOP_SPEED) or
-                    (self.distance(deadzone.mark) < Ship.DEADEND_DISTANCE) or
-                    (self.viewangle(deadzone.mark)))
+                    (self.distance(deadzone().mark) < Ship.DEADEND_DISTANCE) or
+                    (self.viewangle(deadzone().mark)))
         return False
+
+    def _slice_lastpos(self):
+        """Slice lastpos with timelimit"""
+        # if already sliced lastpos - return
+        if not len(self.lastpos) or isinstance(self.lastpos[0], Coordinates):
+            return
+        # get time now - and convert to utc - period
+        starttime = datetime.now() - timedelta(hours=PERIOD + UTC_OFFSET)
+        # define magic numbers
+        TIMESTAMP = 0
+        COORDINATES = 1
+        for i in xrange(len(self.lastpos)):
+            if self.lastpos[i][TIMESTAMP] < starttime:
+                # remove point with timelimit
+                self.lastpos = self.lastpos[:i]
+                break
+            # create coordinate - remove timesta
+            self.lastpos[i] = Coordinates(*self.lastpos[i][COORDINATES])
+
+    def odometer(self):
+        """ Calculate the length of the path traveled in the last PERIOD """
+        if not len(self.lastpos):
+            return 0.
+        self._slice_lastpos()
+        # calculate distance
+        distance = 0.
+        for i in xrange(len(self.lastpos) - 1):
+            distance += (self.lastpos[i + 1] - self.lastpos[i]).length
+        return distance
 
 
 class ShipsContainer(object):
@@ -168,7 +207,7 @@ class ShipsContainer(object):
                 ship = Ship(**raw_ship)
                 # the mmsi must be unique
                 assert ship.mmsi not in self.mmsi_list
-                self.container[ship.name] = ship
+                self.container[ship.mmsi] = ship
                 self.mmsi_list.append(ship.mmsi)
             return self.mmsi_list
         except IOError:
@@ -181,9 +220,35 @@ class ShipsContainer(object):
         if not ship in ais data - set None to it
         """
         # for all ship in container
-        for name, ship in self.container.iteritems():
-            ship.update(ais_data_list.get(ship.mmsi))
+        for mmsi, ship in self.container.iteritems():
+            ship.update(ais_data_list.get(mmsi))
 
-    def print_ships(self):
-        for name, ship in self.container.iteritems():
-            print ship
+    def update_ships_lastpos(self, ais_data_latpos):
+        """
+        Update ships in container, set lastpos
+        data format is { mmsi : [timelimit, (latitude, longitude)], ...}
+        if not ship in ais data - remove attribute lastpos
+        """
+        # for all ship in container
+        for mmsi, ship in self.container.iteritems():
+            ship.lastpos = ais_data_latpos.get(mmsi, [])
+
+    def print_ships(self, color=None):
+        colors = {
+            Ship.STATUS_ONLINE: '\033[92m', Ship.STATUS_OFFLINE: '\033[93m',
+            Ship.STATUS_INDEADEND: '\033[94m', Ship.STATUS_DEAD_PING: '\033[91m',
+            'endline': '\033[0m', }
+
+        for mmsi, ship in self.container.iteritems():
+            if color:
+                print colors[ship.status], unicode(ship), ship.odometer(), colors['endline']
+            else:
+                print ship
+
+    def get_online_mmsis(self):
+        """ Return mmsis of ship with status online """
+        mmsis = []
+        for mmsi, ship in self.container.iteritems():
+            if ship.is_online:
+                mmsis.append(mmsi)
+        return mmsis
