@@ -23,6 +23,12 @@ TWITTER_OAUTH_INFO = dict(
 # if is debug
 DEBUG = False
 
+# peryodical get ship data in hours
+PERIOD = 1
+
+# time delta of UTC
+UTC_OFFSET = 4
+
 try:
     from settings_local import *  # noqa
 except ImportError:
