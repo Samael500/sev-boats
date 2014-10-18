@@ -2,6 +2,7 @@ import urllib2
 from bs4 import BeautifulSoup
 import re
 import time
+from datetime import datetime
 
 
 class Scrapper(object):
@@ -11,10 +12,13 @@ class Scrapper(object):
     ais_domain_url = r'http://www.marinetraffic.com/en/ais/'
     index_prefix = r'%sindex/ships/range/' % ais_domain_url
     details_prefix = r'%sdetails/ships/' % ais_domain_url
+    lastpos_prefix = r'%sindex/positions/all/' % ais_domain_url
 
     ships_list_url = r'%sport_id:883/ship_type:6/flag:UA/per_page:50/page:{page}' % index_prefix
     ship_info_url = r'%sshipname:{NAME}/mmsi:{MMSI}' % index_prefix
     ship_details_url = r'%s{MMSI}/vessel:{NAME}' % details_prefix
+    ship_lastpos_url = '%smmsi:{MMSI}/per_page:50/page:1' % lastpos_prefix
+
 
     # timeout with page request in seconds
     timeout = 10
@@ -24,6 +28,9 @@ class Scrapper(object):
         self.opener = urllib2.build_opener()
         # ~WARNING~ Need add normal user agents
         self.opener.addheaders = [('User-Agent', '')]
+
+    def _sleep(self):
+        time.sleep(self.timeout)
 
     def scrape_ship(self, ship_name, ship_mmsi):
         """
@@ -65,7 +72,7 @@ class Scrapper(object):
             raw_data = soup.find_all('td', {'data-column': '20'})
             # get raw_data from other pages
             for i in range(2, count + 1):
-                time.sleep(self.timeout)
+                self._sleep()
                 url = self.ships_list_url.format(page=i)
                 soup = BeautifulSoup(self.opener.open(url).read())
                 raw_data += soup.find_all('td', {'data-column': '20'})
@@ -116,3 +123,52 @@ class Scrapper(object):
             return (speed, course, (latitude, longitude), delay)
         except (AttributeError):
             return None
+
+    def scrape_lastpos(self, ship_mmsi):
+        """
+        Scrape one ship lastpos from AIS.
+        return [timestamp, (latitude, longitude)] if error occured return None
+        """
+        url = self.ship_lastpos_url.format(MMSI=ship_mmsi).replace(' ', '+')
+
+        try:
+            soup = BeautifulSoup(self.opener.open(url).read())
+            data_row = soup.find('th', text='Timestamp').find_parent('table').find_all('tr')[1:]
+        except (AttributeError, urllib2.URLError):
+            return None
+
+        # define magic numbers - is data row index
+        TIMESTAMP = 0  # get timestamp
+        LATITUDE = 4   # get latitude
+        LONGITUDE = 3  # get longitude
+
+        lastpos = []
+        for tr in data_row:
+            try:
+                row = tr.find_all('td')
+                # get timestamp info
+                raw_time = row[TIMESTAMP].find('span').encode('utf-8')
+                pattern = re.compile(r'\d{4}-\d{2}-\d{2}\s\d+:\d+')
+                timestamp = datetime.strptime(pattern.search(raw_time).group(0), '%Y-%m-%d %H:%M')
+                # get latitude info
+                raw_latitude = row[LATITUDE].find('span').encode('utf-8')
+                pattern = re.compile(r'\d+\.?\d*')
+                latitude = float(pattern.search(raw_latitude).group(0))
+                # get longitude info
+                raw_longitude = row[LONGITUDE].find('span').encode('utf-8')
+                pattern = re.compile(r'\d+\.?\d*')
+                longitude = float(pattern.search(raw_longitude).group(0))
+                # create row data
+                _row = [timestamp, (latitude, longitude)]
+            except (AttributeError):
+                _row = None
+            lastpos.append(_row)
+        return lastpos
+
+    def scrape_ships_list_lastpos(self, ships_mmsi):
+        """ Loop call ship lastpos """
+        result = {}
+        for mmsi in ships_mmsi:
+            result[mmsi] = self.scrape_lastpos(mmsi)
+            self._sleep()
+        return result
