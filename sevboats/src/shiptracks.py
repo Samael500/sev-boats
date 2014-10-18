@@ -53,16 +53,15 @@ class Route(object):
 
     def verification(self, ship):
         """ Checks Is the ship on the route """
-        if not self.bay.is_inside(ship.coordinates):
-            return None
-        else:
-            count = 1
+        if not ship.is_online or not self.bay.is_inside(ship.coordinates):
+            return -1
 
-        if (ship.speed < Ship.STOP_SPEED):
-            for pier in self.piers:
-                if pier.area.is_inside(ship.coordinates):
-                    return MN.TRUEPOS
+        # if (ship.speed < Ship.STOP_SPEED):
+        #     for pier in self.piers:
+        #         if pier.area.is_inside(ship.coordinates):
+        #             return MN.TRUEPOS
 
+        count = 1
         for point in ship.lastpos:
             count += self.bay.is_inside(point)
 
@@ -105,16 +104,16 @@ class RoutesContainer(object):
         Parse coordinate from klm file.
         return: str_name, [Coordinates(latitude, longitude)]
         """
-        placemark = parse(self.get_route_path(filename)).getElementsByTagName("Placemark")[0]        
+        placemark = parse(self.get_route_path(filename)).getElementsByTagName("Placemark")[0]
         coordinates = placemark.getElementsByTagName("coordinates")[0].childNodes[0].nodeValue
-        #Warning ENCODE CP 866 
-        name = placemark.getElementsByTagName("name")[0].childNodes[0].nodeValue#.encode("CP866")
+        #Warning ENCODE CP 866
+        name = placemark.getElementsByTagName("name")[0].childNodes[0].nodeValue  # .encode("CP866")
         polygon = []
         for coord in coordinates.split():
             #print "#", coord, "#"
             longitude, latitude, altitude = (float(c) for c in coord.split(',') if c != '')
             polygon.append(Coordinates(latitude, longitude))
-        
+
         return name, Polygon(polygon)
 
     def parse_pier(self, filename):
