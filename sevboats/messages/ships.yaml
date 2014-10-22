@@ -1,0 +1,2 @@
+- {text: "Внимание! Катера не ходят!\n{datetime}", status: 'off'}
+- {text: "Все отлично. Катера ходят.\n{datetime}", status: 'on'}
