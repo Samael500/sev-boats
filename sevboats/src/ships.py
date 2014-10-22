@@ -137,6 +137,10 @@ class Ship(object):
         """ Get distance between two points (self.coordinates, point-destination) """
         return (point - self.coordinates).length
 
+    def angle (self, point):
+        """ Easy use for Coordinates.angle() """
+        return self.coordinates.angle(self.course, point)
+
     def viewangle(self, point):
         return self.angle(point) < Ship.VIEWANGLE
 
