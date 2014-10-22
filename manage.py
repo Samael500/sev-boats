@@ -4,6 +4,7 @@
 import os
 import sys
 import logging
+from colorama import Fore
 from datetime import datetime
 import sevboats
 
@@ -19,26 +20,20 @@ date_format = '%Y-%m-%d %H:%M:%S :'
 
 logging.basicConfig(level=logging.ERROR)
 
-class bcolors:
-    INFOBLUE = '\033[94m'
-    OKGREEN = '\033[92m'
-    WARNING = '\033[93m'
-    FAIL = '\033[91m'
-    ENDC = '\033[0m'
-
 # def functions
+
 
 def logger(function):
 
     def wrapper():
         try:
-            print bcolors.INFOBLUE, datetime.now().strftime(date_format),
+            print Fore.BLUE, datetime.now().strftime(date_format),
             result = function()
-            print bcolors.OKGREEN, result['text'].replace('\n', ' - '),
+            print Fore.GREEN, result['text'].replace('\n', ' - '),
         except Exception, e:
-            print bcolors.FAIL, e.message,
+            print Fore.RED, e.message,
         finally:
-            print bcolors.ENDC
+            print Fore.RESET
     return wrapper
 
 
@@ -56,11 +51,12 @@ def ship_status_msg():
     """ Post ship status messages """
     hour = datetime.now().hour
     if hour > 5 and hour < 23:
-        status = sevboats.send_fleet_message()
+        status, change = sevboats.send_fleet_message()
         message = ship_messenger.get_message(status)
-        message = message.format(datetime=datetime.now().strftime(date_format))
-        return dict(text=message)
-        return twitter.post_tweet(message)
+        if change or not(hour % settings.MESSAGE_PERIOD):
+            return twitter.post_tweet(message)
+        else:
+            return dict(text=Fore.YELLOW + message)
 
 
 if __name__ == '__main__':

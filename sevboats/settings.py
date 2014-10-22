@@ -25,6 +25,7 @@ DEBUG = False
 
 # peryodical get ship data in hours
 PERIOD = 1
+MESSAGE_PERIOD = 3
 
 # time delta of UTC
 UTC_OFFSET = 4

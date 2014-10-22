@@ -19,10 +19,7 @@ class Twitter(object):
 
     def post_tweet(self, message):
         """ Writes message into twitter stream """
-        try:
-            return self.twitter.update_status(status=message, trim_user=True)
-        except TwythonError:
-            return None
+        return self.twitter.update_status(status=message, trim_user=True)
 
     def delete_tweet(self, tweet_id):
         """ Remove tweet from timeline """

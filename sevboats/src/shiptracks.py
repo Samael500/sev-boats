@@ -4,7 +4,6 @@ import os
 
 from xml.dom.minidom import parse
 from coordinates import Polygon, Coordinates
-from ships import Ship
 from settings import DATA_DIR
 
 
@@ -106,11 +105,9 @@ class RoutesContainer(object):
         """
         placemark = parse(self.get_route_path(filename)).getElementsByTagName("Placemark")[0]
         coordinates = placemark.getElementsByTagName("coordinates")[0].childNodes[0].nodeValue
-        #Warning ENCODE CP 866
         name = placemark.getElementsByTagName("name")[0].childNodes[0].nodeValue  # .encode("CP866")
         polygon = []
         for coord in coordinates.split():
-            #print "#", coord, "#"
             longitude, latitude, altitude = (float(c) for c in coord.split(',') if c != '')
             polygon.append(Coordinates(latitude, longitude))
 

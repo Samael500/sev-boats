@@ -2,9 +2,10 @@
 
 from settings import DATA_DIR, PERIOD, UTC_OFFSET
 from datetime import datetime, timedelta
+from colorama import Fore
+
 import os
 import yaml
-import random
 
 from .coordinates import Coordinates
 from .engine import SingletonLazy
@@ -137,7 +138,7 @@ class Ship(object):
         """ Get distance between two points (self.coordinates, point-destination) """
         return (point - self.coordinates).length
 
-    def angle (self, point):
+    def angle(self, point):
         """ Easy use for Coordinates.angle() """
         return self.coordinates.angle(self.course, point)
 
@@ -239,9 +240,9 @@ class ShipsContainer(object):
 
     def print_ships(self, color=None):
         colors = {
-            Ship.STATUS_ONLINE: '\033[92m', Ship.STATUS_OFFLINE: '\033[93m',
-            Ship.STATUS_INDEADEND: '\033[94m', Ship.STATUS_DEAD_PING: '\033[91m',
-            'endline': '\033[0m', }
+            Ship.STATUS_ONLINE: Fore.GREEN, Ship.STATUS_OFFLINE: Fore.YELLOW,
+            Ship.STATUS_INDEADEND: Fore.BLUE, Ship.STATUS_DEAD_PING: Fore.RED,
+            'endline': Fore.RESET, }
 
         for mmsi, ship in self.container.iteritems():
             if color:

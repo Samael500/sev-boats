@@ -86,18 +86,11 @@ def send_fleet_message():
         SlL.fleet().print_ships(True)
         print '---------------------------------------'
 
-        return 'off'
-    elif ships:
-        return 'on'
+    change_status = bool(ships) ^ SlL.fleet_status
+    SlL.fleet_status = bool(ships)
 
-    if not ships:  # and SlL.fleet_status:
-        # ships don't go
-        SlL.fleet_status = False
-        return 'off'
-    elif ships and not SlL.fleet_status:
-        # ships - go Ok
-        SlL.fleet_status = True
-        return 'on'
+    return ('off', 'on')[SlL.fleet_status], change_status
+
 
 def initial():
     _loadship()

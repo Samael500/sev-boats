@@ -19,7 +19,6 @@ class Scrapper(object):
     ship_details_url = r'%s{MMSI}/vessel:{NAME}' % details_prefix
     ship_lastpos_url = '%smmsi:{MMSI}/per_page:50/page:1' % lastpos_prefix
 
-
     # timeout with page request in seconds
     timeout = 10
 
