@@ -15,4 +15,7 @@
 
 from sevboats.settings import *              # noqa
 from sevboats.src.twitter import Twitter     # noqa
-from sevboats.src.messages import MiddayGun  # noqa
+from sevboats.src.messages import MiddayGun, ShipMessenger   # noqa
+from sevboats.src.engine import initial, send_fleet_message  # noqa
+
+initial()

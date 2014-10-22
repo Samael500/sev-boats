@@ -40,3 +40,21 @@ class MiddayGun(Messenger):
     """ Midday gun messanger """
 
     filename = 'midday_gun'
+
+
+class ShipMessenger(Messenger):
+
+    """ Midday gun messanger """
+
+    filename = 'ships'
+
+    def get_message(self, status):
+        """ Get random message from messages array with same status """
+        messages = self.get_messages()
+        if messages:
+            filter_messages = []
+            for message in messages:
+                if message['status'] == status:
+                    filter_messages.append(message)
+            return random.choice(filter_messages)['text']
+        return None

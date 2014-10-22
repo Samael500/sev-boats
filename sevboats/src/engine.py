@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
 
+
 class SingletonLazy(object):
+
+    fleet_status = True
 
     @staticmethod
     def get(cls, *args, **kwargs):
@@ -33,23 +36,26 @@ from .shiptracks import RoutesContainer
 from .scrapper import Scrapper
 
 
-def loadship():
+def _loadship():
     """ Load ship info from data/ships.yaml """
     SlL.fleet().get_ships()
 
-def update_ais_data():
+
+def _update_ais_data():
     """ Request ais to get ship data and update it """
     mmsis = SlL.fleet().mmsi_list
     data = SlL.ais_scrapper().scrape_ships_list(mmsis)
     SlL.fleet().update_ships(data)
 
-def update_ais_lastpos():
+
+def _update_ais_lastpos():
     """ Request ais to get ship lastpos """
     mmsis = SlL.fleet().get_online_mmsis()
     data = SlL.ais_scrapper().scrape_ships_list_lastpos(mmsis)
     SlL.fleet().update_ships_lastpos(data)
 
-def check_ships_on_routes():
+
+def _check_ships_on_routes():
     """ Check how many ship on routes are moved in last hours """
     moved_on_routes = 0
     for mmsi, ship in SlL.fleet().container.iteritems():
@@ -67,3 +73,31 @@ def check_ships_on_routes():
         if (route_index is not None) and (distance > Ship.MOVING_LENGTH):
             moved_on_routes += 1
     return moved_on_routes
+
+
+def send_fleet_message():
+    """ Check fleet status on ais and return message to send to twitter """
+    _update_ais_data()
+    _update_ais_lastpos()
+    ships = _check_ships_on_routes()
+
+    if not ships:
+        print '---------------------------------------'
+        SlL.fleet().print_ships(True)
+        print '---------------------------------------'
+
+        return 'off'
+    elif ships:
+        return 'on'
+
+    if not ships:  # and SlL.fleet_status:
+        # ships don't go
+        SlL.fleet_status = False
+        return 'off'
+    elif ships and not SlL.fleet_status:
+        # ships - go Ok
+        SlL.fleet_status = True
+        return 'on'
+
+def initial():
+    _loadship()
