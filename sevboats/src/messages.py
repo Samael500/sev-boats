@@ -44,7 +44,7 @@ class MiddayGun(Messenger):
 
 class ShipMessenger(Messenger):
 
-    """ Midday gun messanger """
+    """ Ship messanger """
 
     filename = 'ships'
 

@@ -32,6 +32,8 @@ class Ship(object):
     DELTA = 0.0025                  # distance to determinate next pier ~ 25 m
     DEADEND_DISTANCE = 0.0090       # distancedistance to deadend place ~ 900 m
     MOVING_LENGTH = 0.005 * PERIOD  # minimal cignificant length of ship track on last hour ~ 500 m / per hours
+    CRITICAL_MINIMUM = 1            # is minimal online ship on routes for it be OK
+    MAX_LASTPOS_LEN = 50            # max length of lastpos - use for true ship on routes
 
     def __init__(self, mmsi, name, ru_name, kind, speed=None, course=None, coordinates=None, delay=None):
         """
@@ -173,13 +175,13 @@ class Ship(object):
 
     def odometer(self):
         """ Calculate the length of the path traveled in the last PERIOD """
-        if not len(self.lastpos):
+        if not self.lastpos:
             return 0.
         self._slice_lastpos()
         # calculate distance
         distance = 0.
-        for i in xrange(len(self.lastpos) - 1):
-            distance += (self.lastpos[i + 1] - self.lastpos[i]).length
+        for i in xrange(1, len(self.lastpos)):
+            distance += (self.lastpos[i] - self.lastpos[i - 1]).length
         return distance
 
 
