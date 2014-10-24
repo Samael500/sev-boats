@@ -38,6 +38,7 @@
 	</StyleMap>
 	<Placemark>
 		<name>Город - Северная</name>
+		<kind>BOAT</kind>
 		<LookAt>
 			<longitude>33.53171168204196</longitude>
 			<latitude>44.62166799700201</latitude>

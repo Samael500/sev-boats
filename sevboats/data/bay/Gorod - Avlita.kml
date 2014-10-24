@@ -39,6 +39,7 @@
 	</StyleMap>
 	<Placemark>
 		<name>Город - Авлита</name>
+		<kind>BOAT</kind>
 		<styleUrl>#msn_ylw-pushpin</styleUrl>
 		<LineString>
 			<tessellate>1</tessellate>

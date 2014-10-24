@@ -1,25 +1,25 @@
 # mmsi - Maritime Mobile Service Identity
 # name - Latin vessel name
 # ru_name - Cyrillic vessel name
-# kind - Vessel kind (boat or ferry)
+# kind - Vessel kind (BOAT or FERRY)
 
-# the boat kind
-- {mmsi: '272083500', name: 'G. OVCHINNIKOV', ru_name: 'Григорий Овчинников', kind: 'boat'}
-- {mmsi: '272083600', name: 'PLUTON',         ru_name: 'Плутон',              kind: 'boat'}
-- {mmsi: '272083700', name: 'UPITER',         ru_name: 'Юпитер',              kind: 'boat'}
-- {mmsi: '272083800', name: 'ZUYD',           ru_name: 'Зюйд',                kind: 'boat'}
-- {mmsi: '272092200', name: 'MERKURIY',       ru_name: 'Меркурий',            kind: 'boat'}
-- {mmsi: '272093800', name: 'MOLODIZGNIY',    ru_name: 'Молодежный',          kind: 'boat'}
-- {mmsi: '272093900', name: 'OST',            ru_name: 'Ост',                 kind: 'boat'}
-- {mmsi: '272094100', name: 'OMEGA',          ru_name: 'Омега',               kind: 'boat'}
-- {mmsi: '272094200', name: 'ORION',          ru_name: 'Орион',               kind: 'boat'}
-- {mmsi: '272094300', name: 'SATURN',         ru_name: 'Сатурн',              kind: 'boat'}
-- {mmsi: '272094700', name: 'WEST',           ru_name: 'Вест',                kind: 'boat'}
-- {mmsi: '272100500', name: 'PERSEY',         ru_name: 'Персей',              kind: 'boat'}
-- {mmsi: '272105400', name: 'URAN',           ru_name: 'Уран',                kind: 'boat'}
-- {mmsi: '272105500', name: 'NORD',           ru_name: 'Норд',                kind: 'boat'}
-# the ferry kind
-- {mmsi: '272124300', name: 'ADMIRAL ISTOMIN',     ru_name: 'Адмирал Истомин',             kind: 'ferry'}
-- {mmsi: '272124400', name: 'ADMIRAL LAZAREV',     ru_name: 'Адмирал Лазарев',             kind: 'ferry'}
-- {mmsi: '272126200', name: 'KAP-LEYT. KAZARSKIY', ru_name: 'Капитан-лейтенант Казарский', kind: 'ferry'}
-- {mmsi: '273340450', name: 'V ADMIRAL KLOKACHEV', ru_name: 'Вице-адмирал Клокачев',       kind: 'ferry'}
+# the BOAT kind
+- {mmsi: '272083500', name: 'G. OVCHINNIKOV', ru_name: 'Григорий Овчинников', kind: 'BOAT'}
+- {mmsi: '272083600', name: 'PLUTON',         ru_name: 'Плутон',              kind: 'BOAT'}
+- {mmsi: '272083700', name: 'UPITER',         ru_name: 'Юпитер',              kind: 'BOAT'}
+- {mmsi: '272083800', name: 'ZUYD',           ru_name: 'Зюйд',                kind: 'BOAT'}
+- {mmsi: '272092200', name: 'MERKURIY',       ru_name: 'Меркурий',            kind: 'BOAT'}
+- {mmsi: '272093800', name: 'MOLODIZGNIY',    ru_name: 'Молодежный',          kind: 'BOAT'}
+- {mmsi: '272093900', name: 'OST',            ru_name: 'Ост',                 kind: 'BOAT'}
+- {mmsi: '272094100', name: 'OMEGA',          ru_name: 'Омега',               kind: 'BOAT'}
+- {mmsi: '272094200', name: 'ORION',          ru_name: 'Орион',               kind: 'BOAT'}
+- {mmsi: '272094300', name: 'SATURN',         ru_name: 'Сатурн',              kind: 'BOAT'}
+- {mmsi: '272094700', name: 'WEST',           ru_name: 'Вест',                kind: 'BOAT'}
+- {mmsi: '272100500', name: 'PERSEY',         ru_name: 'Персей',              kind: 'BOAT'}
+- {mmsi: '272105400', name: 'URAN',           ru_name: 'Уран',                kind: 'BOAT'}
+- {mmsi: '272105500', name: 'NORD',           ru_name: 'Норд',                kind: 'BOAT'}
+# the FERRY kind
+- {mmsi: '272124300', name: 'ADMIRAL ISTOMIN',     ru_name: 'Адмирал Истомин',             kind: 'FERRY'}
+- {mmsi: '272124400', name: 'ADMIRAL LAZAREV',     ru_name: 'Адмирал Лазарев',             kind: 'FERRY'}
+- {mmsi: '272126200', name: 'KAP-LEYT. KAZARSKIY', ru_name: 'Капитан-лейтенант Казарский', kind: 'FERRY'}
+- {mmsi: '273340450', name: 'V ADMIRAL KLOKACHEV', ru_name: 'Вице-адмирал Клокачев',       kind: 'FERRY'}

@@ -38,6 +38,7 @@
 	</StyleMap>
 	<Placemark>
 		<name>Артбухта - Радиогорка</name>
+		<kind>BOAT</kind>
 		<styleUrl>#msn_blue-pushpin</styleUrl>
 		<LineString>
 			<tessellate>1</tessellate>

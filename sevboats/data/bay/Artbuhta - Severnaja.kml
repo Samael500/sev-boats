@@ -38,6 +38,7 @@
 	</StyleMap>
 	<Placemark>
 		<name>Артбухта - Северная</name>
+		<kind>FERRY</kind>
 		<styleUrl>#msn_ylw-pushpin</styleUrl>
 		<LineString>
 			<tessellate>1</tessellate>
