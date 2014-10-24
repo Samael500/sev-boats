@@ -58,6 +58,7 @@ def _update_ais_lastpos():
 def _check_ships_on_routes():
     """ Check how many ship on routes are moved in last hours """
     moved_on_routes = 0
+    potential = 0
     for mmsi, ship in SlL.fleet().container.iteritems():
         # run odometr and get distance
         distance = ship.odometer()
@@ -70,10 +71,15 @@ def _check_ships_on_routes():
                 verification_max = verification
                 route_index = index
         # if ship moving and it on same route
-        if (route_index is not None) and (distance > Ship.MOVING_LENGTH):
-            moved_on_routes += 1
-    return moved_on_routes
+        if (route_index is not None):
+            if (distance > Ship.MOVING_LENGTH):
+                moved_on_routes += 1
+            elif not distance and ship.is_boat:
+                potential += 1
 
+    if not moved_on_routes and (potential >= Ship.CRITICAL_MINIMUM):
+         return potential
+    return moved_on_routes
 
 def send_fleet_message():
     """ Check fleet status on ais and return message to send to twitter """
