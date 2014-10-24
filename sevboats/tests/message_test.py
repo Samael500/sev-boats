@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import unittest
-from sevboats.src.messages import Messenger, MiddayGun
+from sevboats.src.messages import Messenger, MiddayGun, ShipMessenger
 
 
 class TestMessenger(unittest.TestCase):
@@ -65,3 +65,35 @@ class TestMiddayGunMessager(unittest.TestCase):
     def test_get_messages_path(self):
         """ Check file path for messages file """
         self.assertIn('/sev-boats/sevboats/messages/midday_gun.yaml', self.messager.get_messages_path)
+
+
+class TestShipMessager(unittest.TestCase):
+
+    """ Test ship messenger class """
+
+    def setUp(self):
+        self.messager = ShipMessenger()
+
+    def test_message_class(self):
+        """ Check file name and ext default """
+        self.assertEqual(self.messager.filename, 'ships')
+        self.assertEqual(self.messager.filename_suffix, '.yaml')
+
+    def test_get_messages_none(self):
+        """ Check get None if no file name """
+        self.messager.filename = 'no_file'
+        self.assertTrue(self.messager.get_message('test') is None)
+
+    def test_get_messages_path(self):
+        """ Check file path for messages file """
+        self.assertIn('/sev-boats/sevboats/messages/ships.yaml', self.messager.get_messages_path)
+
+    def test_get_messages_rand(self):
+        """ Get random message OK """
+        messages = self.messager.get_messages()
+        message = self.messager.get_message('on')
+        dict_message = dict(text=message, status='on')
+        self.assertIn(dict_message, messages)
+        message = self.messager.get_message('off')
+        dict_message = dict(text=message, status='off')
+        self.assertIn(dict_message, messages)
