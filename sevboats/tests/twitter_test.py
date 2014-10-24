@@ -43,6 +43,11 @@ class TestTwitter(unittest.TestCase):
         unfollows = self.twitter.unfollow(user_id)
         self.assertEquals(unfollows['id_str'], user_id)
         self.assertEquals(follows['id_str'], unfollows['id_str'])
+        # test follow/unfollow error
+        follows = self.twitter.follow(0)
+        self.assertEquals(follows[status], 'error')
+        unfollows = self.twitter.unfollow(0)
+        self.assertEquals(unfollows[status], 'error')
 
     def test_twitter_follow_list(self):
         """ Follow to users list and unfollow now """
