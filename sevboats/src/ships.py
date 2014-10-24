@@ -123,7 +123,7 @@ class Ship(object):
 
     def update_status(self):
         """ Change ship status """
-        status_old = self.status
+        status_old = self.status  # noqa
         status_new = None
         # check different situation
         if self.coordinates is None:

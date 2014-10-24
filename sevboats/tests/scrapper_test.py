@@ -16,10 +16,13 @@ class TestAISScrapper(unittest.TestCase):
         # change timelimit and scrapp urls
         self.scrapper.timeout = 0
         file_url = r'file:///'
-        self.scrapper.ships_list_url = file_url + os.path.join(BASE_DIR, 'sevboats', 'tests', 'test_data', 'list-page:{page}.html')
+        self.scrapper.ships_list_url = file_url + os.path.join(
+            BASE_DIR, 'sevboats', 'tests', 'test_data', 'list-page:{page}.html')
         self.scrapper.ship_info_url = file_url + os.path.join(BASE_DIR, 'sevboats', 'tests', 'test_data', 'list.html')
-        self.scrapper.ship_lastpos_url = file_url + os.path.join(BASE_DIR, 'sevboats', 'tests', 'test_data', 'lastpos.html')
-        self.scrapper.none_url = file_url + os.path.join(BASE_DIR, 'sevboats', 'tests', 'test_data', '{types}_none.html')
+        self.scrapper.ship_lastpos_url = file_url + os.path.join(
+            BASE_DIR, 'sevboats', 'tests', 'test_data', 'lastpos.html')
+        self.scrapper.none_url = file_url + os.path.join(
+            BASE_DIR, 'sevboats', 'tests', 'test_data', '{types}_none.html')
         self.mmsi_list = (
             '272083500', '272083600', '272083700', '272083800', '272092200', '272093800', '272093900',
             '272094100', '272094200', '272094300', '272094700', '272100500', '272105400', '272105500',

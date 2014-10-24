@@ -50,4 +50,3 @@ class TestShip(unittest.TestCase):
         """ Check str and unicode """
         self.assertEquals('URAN: OFFLINE', str(self.ship))
         self.assertEquals(u'Уран: 272105400 - OFFLINE', unicode(self.ship))
-

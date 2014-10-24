@@ -78,8 +78,9 @@ def _check_ships_on_routes():
                 potential += 1
 
     if not moved_on_routes and (potential >= Ship.CRITICAL_MINIMUM):
-         return potential
+        return potential
     return moved_on_routes
+
 
 def send_fleet_message():
     """ Check fleet status on ais and return message to send to twitter """
