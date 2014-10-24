@@ -20,7 +20,7 @@ class Scrapper(object):
     ship_lastpos_url = '%smmsi:{MMSI}/per_page:50/page:1' % lastpos_prefix
 
     # timeout with page request in seconds
-    timeout = 10
+    timeout = 30
 
     def __init__(self):
         # create urllib2 opener, with costom user agent
@@ -122,6 +122,13 @@ class Scrapper(object):
             return (speed, course, (latitude, longitude), delay)
         except (AttributeError):
             return None
+        except (TypeError):
+            print '***'
+            print row
+            print row[RECEIVED]
+            print row[RECEIVED].find('span')
+            print raw_delay
+            raise TypeError
 
     def scrape_lastpos(self, ship_mmsi):
         """

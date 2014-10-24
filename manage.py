@@ -1,14 +1,16 @@
-#!./venv/bin/python
+#!venv/bin/python
 # -*- coding: utf-8 -*-
 
 import os
 import sys
+import traceback
 import logging
 from colorama import Fore
 from datetime import datetime
+from apscheduler.schedulers.blocking import BlockingScheduler
+
 import sevboats
 
-from apscheduler.schedulers.blocking import BlockingScheduler
 
 # init variables
 scheduler = BlockingScheduler()
@@ -16,9 +18,9 @@ twitter = sevboats.Twitter()
 middaygun = sevboats.MiddayGun()
 ship_messenger = sevboats.ShipMessenger()
 
-date_format = '%Y-%m-%d %H:%M:%S :'
+date_format = '%Y-%m-%d %H:%M :'
 
-logging.basicConfig(level=logging.ERROR)
+logging.basicConfig(level=logging.INFO)
 
 # def functions
 
@@ -27,11 +29,13 @@ def logger(function):
 
     def wrapper():
         try:
-            print Fore.BLUE, datetime.now().strftime(date_format),
             result = function()
+            print Fore.BLUE, datetime.now().strftime(date_format),
             print Fore.GREEN, result['text'].replace('\n', ' - '),
         except Exception, e:
-            print Fore.RED, e.message,
+            print Fore.BLUE, datetime.now().strftime(date_format),
+            print Fore.RED, e.message
+            traceback.print_exc(file=sys.stdout)
         finally:
             print Fore.RESET
     return wrapper
@@ -42,26 +46,30 @@ def logger(function):
 def middaygun_msg():
     """ Post middaygun messages """
     message = middaygun.get_message()
+    print 'middaygun:', message
     return twitter.post_tweet(message)
 
 
-@scheduler.scheduled_job('cron', minute='*/30', id='ship_status')
+@scheduler.scheduled_job('cron', hour='6-23', minute='*/30', id='ship_status')
 @logger
 def ship_status_msg():
     """ Post ship status messages """
-    hour = datetime.now().hour
-    if hour > 5 and hour < 23:
-        status, change = sevboats.send_fleet_message()
-        message = ship_messenger.get_message(status)
-        if change or not(hour % settings.MESSAGE_PERIOD):
-            return twitter.post_tweet(message)
-        else:
-            return dict(text=Fore.YELLOW + message)
+    now = datetime.now()
+    minute = now.minute
+    hour = now.hour
+    status, change = sevboats.send_fleet_message()
+    message = ship_messenger.get_message(status)
+    if change or (not(hour % sevboats.settings.MESSAGE_PERIOD) and minute < 30):
+        print 'ship status:', message
+        return twitter.post_tweet(message)
+    else:
+        return dict(text=Fore.YELLOW + message)
 
 
 if __name__ == '__main__':
     # print (sys.argv)
     print 'Press Ctrl+C to exit'
+    ship_status_msg()
     try:
         scheduler.start()
     except (KeyboardInterrupt, SystemExit):
