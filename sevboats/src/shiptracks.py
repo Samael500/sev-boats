@@ -6,6 +6,8 @@ from xml.dom.minidom import parse
 from coordinates import Polygon, Coordinates
 from settings import DATA_DIR
 
+from .ships import Ship
+
 
 class Pier(object):
 
@@ -33,7 +35,7 @@ class Route(object):
 
     """ Route class """
 
-    def __init__(self, name, bay=None, piers=[]):
+    def __init__(self, name, kind, bay=None, piers=[]):
         """
         Create new instance of piers
         :name - `string` name of pier
@@ -43,6 +45,7 @@ class Route(object):
         self.name = name
         self.bay = bay
         self.piers = piers
+        self.kind = kind
 
     def __unicode__(self):
         return u'route: {name};'.format(name=self.name)
@@ -52,17 +55,18 @@ class Route(object):
 
     def verification(self, ship):
         """ Checks Is the ship on the route """
-        if not ship.is_online or not self.bay.is_inside(ship.coordinates):
+        if not ship.is_online or not self.bay.is_inside(ship.coordinates) or (self.kind != ship.kind):
             return -1
 
-        # if (ship.speed < Ship.STOP_SPEED):
-        #     for pier in self.piers:
-        #         if pier.area.is_inside(ship.coordinates):
-        #             return MN.TRUEPOS
+        if (ship.speed < Ship.STOP_SPEED):
+            for pier in self.piers:
+                if pier.area.is_inside(ship.coordinates):
+                    return Ship.MAX_LASTPOS_LEN + 1
 
         count = 1
-        for point in ship.lastpos:
-            count += self.bay.is_inside(point)
+        if ship.lastpos:
+            for point in ship.lastpos:
+                count += self.bay.is_inside(point)
 
         return count
 
@@ -106,12 +110,16 @@ class RoutesContainer(object):
         placemark = parse(self.get_route_path(filename)).getElementsByTagName("Placemark")[0]
         coordinates = placemark.getElementsByTagName("coordinates")[0].childNodes[0].nodeValue
         name = placemark.getElementsByTagName("name")[0].childNodes[0].nodeValue  # .encode("CP866")
+        if placemark.getElementsByTagName("kind"):
+            kind = placemark.getElementsByTagName("kind")[0].childNodes[0].nodeValue  # .encode("CP866")
+        else:
+            kind = 'pass'
         polygon = []
         for coord in coordinates.split():
             longitude, latitude, altitude = (float(c) for c in coord.split(',') if c != '')
             polygon.append(Coordinates(latitude, longitude))
 
-        return name, Polygon(polygon)
+        return name, kind, Polygon(polygon)
 
     def parse_pier(self, filename):
         """
@@ -125,4 +133,4 @@ class RoutesContainer(object):
 
         area = self.parse_area(filename)
 
-        return area[0], area[1], mark
+        return area[0], area[2], mark
