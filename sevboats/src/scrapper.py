@@ -14,7 +14,7 @@ class Scrapper(object):
     details_prefix = r'%sdetails/ships/' % ais_domain_url
     lastpos_prefix = r'%sindex/positions/all/' % ais_domain_url
 
-    ships_list_url = r'%sport_id:883/ship_type:6/flag:UA/per_page:50/page:{page}' % index_prefix
+    ships_list_url = r'%sport_id:883/ship_type:6/per_page:50/page:{page}' % index_prefix
     ship_info_url = r'%sshipname:{NAME}/mmsi:{MMSI}' % index_prefix
     ship_details_url = r'%s{MMSI}/vessel:{NAME}' % details_prefix
     ship_lastpos_url = '%smmsi:{MMSI}/per_page:50/page:1' % lastpos_prefix
