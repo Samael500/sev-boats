@@ -50,7 +50,7 @@ def middaygun_msg():
     return twitter.post_tweet(message)
 
 
-@scheduler.scheduled_job('cron', hour='6-23', minute='*/30', id='ship_status')
+@scheduler.scheduled_job('cron', hour='6-23', minute='15,45', id='ship_status')
 @logger
 def ship_status_msg():
     """ Post ship status messages """

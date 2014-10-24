@@ -13,6 +13,7 @@ class Twitter(object):
 
     query_string = '#севастополь -украина OR северная OR катер OR SevastopolBoats OR sevboats :) since:%s lang:ru'
     timelimit = 90
+    max_follow = 100
 
     def __init__(self, auth=TWITTER_OAUTH_INFO):
         self.twitter = Twython(**auth)
@@ -78,13 +79,11 @@ class Twitter(object):
         """ Get list of my followers """
         followers_ids = []
         next_cursor = -1
-        while True:
+        while next_cursor != '0':
             cursor = next_cursor
             fids = self.twitter.get_followers_ids(cursor=cursor, stringify_ids=True, count=1000)
             followers_ids += fids['ids']
             next_cursor = fids['next_cursor_str']
-            if next_cursor == '0':
-                break
             time.sleep(self.timelimit)
         return followers_ids
 
@@ -96,6 +95,23 @@ class Twitter(object):
 
     def follow_followers(self):
         """ Follow for all followers """
-        users_ids = self.my_followers()
-        self.follow_list(users_ids)
+        followers_ids = self.my_followers()
+        friends_ids = self.i_follow()
+        users_ids = []
+        for follower in followers_ids:
+            if follower not in friends_ids:
+                users_ids.append(follower)
+        self.follow_list(users_ids[:self.max_follow])
         return users_ids
+
+    def i_follow(self):
+        """ Get list of user i follow what """
+        friends_ids = []
+        next_cursor = -1
+        while next_cursor != '0':
+            cursor = next_cursor
+            fids = self.twitter.get_friends_ids(cursor=cursor, stringify_ids=True, count=1000)
+            friends_ids += fids['ids']
+            next_cursor = fids['next_cursor_str']
+            time.sleep(self.timelimit)
+        return friends_ids

@@ -14,6 +14,8 @@ class TestTwitter(unittest.TestCase):
         self.twitter = Twitter()
         # set query string
         self.twitter.query_string = '"#test"'
+        # no timelimit
+        self.twitter.timelimit = 0
 
     def test_twitter_post_delete(self):
         """ Test twitter post and delete message """
@@ -45,9 +47,9 @@ class TestTwitter(unittest.TestCase):
         self.assertEquals(follows['id_str'], unfollows['id_str'])
         # test follow/unfollow error
         follows = self.twitter.follow(0)
-        self.assertEquals(follows[status], 'error')
+        self.assertEquals(follows['status'], 'error')
         unfollows = self.twitter.unfollow(0)
-        self.assertEquals(unfollows[status], 'error')
+        self.assertEquals(unfollows['status'], 'error')
 
     def test_twitter_follow_list(self):
         """ Follow to users list and unfollow now """
