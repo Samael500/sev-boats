@@ -26,7 +26,7 @@ class Ship(object):
     STATUS_DEAD_PING = 'DEAD_PING'
     _STATUS_DEFAULT = STATUS_OFFLINE
     # Constants used ship
-    DEAD_PING_TIMELIMIT = 35 * 60   # Timelimit for dead ping in seconds - 35 minutes
+    DEAD_PING_TIMELIMIT = 90 * 60   # Timelimit for dead ping in seconds - 90 minutes
     STOP_SPEED = 0.55               # minimal cignificant speed khot
     VIEWANGLE = 80                  # angle at which it is considered that the boat went to target
     DELTA = 0.0025                  # distance to determinate next pier ~ 25 m
