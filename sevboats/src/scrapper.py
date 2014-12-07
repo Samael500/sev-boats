@@ -68,17 +68,17 @@ class Scrapper(object):
             search = pattern.search(page_all)
             count = int(search.group(1)) if search else 1
             # get raw_data of first page
-            raw_data = soup.find_all('td', {'data-column': '20'})
+            raw_data = soup.find_all('td')#, {'data-column': '20'})
             # get raw_data from other pages
             for i in range(2, count + 1):
                 self._sleep()
                 url = self.ships_list_url.format(page=i)
                 soup = BeautifulSoup(self.opener.open(url).read())
-                raw_data += soup.find_all('td', {'data-column': '20'})
+                raw_data += soup.find_all('td')#, {'data-column': '20'})
             # filter raw data - only neaded ships
             for row in raw_data:
-                if row.text in ships_mmsi:
-                    data.append((row.text.encode('utf-8'), row.find_parent('tr').find_all('td')))
+                if row.text.strip() in ships_mmsi:
+                    data.append((row.text.strip().encode('utf-8'), row.find_parent('tr').find_all('td')))
         except (AttributeError, urllib2.URLError):
             data = None
 
@@ -87,6 +87,7 @@ class Scrapper(object):
                 coord_info = self._get_data(row[1])
                 if coord_info is not None:
                     result[row[0]] = coord_info
+
         return result
 
     def _get_data(self, row):
@@ -98,10 +99,9 @@ class Scrapper(object):
         VESSEL_NAME = 3  # get course as rotate icon
         SPEED = 7        # get speed
         RECEIVED = 9     # get time delay and coord pos
-
         try:
             # get speed info
-            raw_speed = row[SPEED].find('span').encode('utf-8')
+            raw_speed = row[SPEED].text.encode('utf-8')
             pattern = re.compile(r'\d+\.?\d*')
             speed = float(pattern.search(raw_speed).group(0))
             # get course info
@@ -116,8 +116,10 @@ class Scrapper(object):
             latitude = float(m.group(2))
             # get time delay info
             raw_delay = row[RECEIVED].find('span')['title'].encode('utf-8')
-            pattern = re.compile(r'(\d+)s')
-            delay = int(pattern.search(raw_delay).group(1))
+            pattern = re.compile(r'(\d{4}-\d{1,2}-\d{1,2}\s\d{1,2}:\d{1,2}:\d{1,2})')
+            recived_at = datetime.strptime(pattern.search(raw_delay).group(1), '%Y-%m-%d %H:%M:%S')
+            now = datetime.utcnow()
+            delay = int((now-recived_at).total_seconds())
             # return result
             return (speed, course, (latitude, longitude), delay)
         except (AttributeError):
