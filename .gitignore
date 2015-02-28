@@ -55,3 +55,6 @@ target/
 
 # virtual env
 venv/
+
+# settings local
+settings_local.py
