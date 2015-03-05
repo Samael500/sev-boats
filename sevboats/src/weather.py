@@ -5,6 +5,7 @@ from settings import OWM_APIKEY, DATA_DIR
 
 import pyowm
 import os
+import time
 
 weather_dict = {
     '01d': 'wi-day-sunny',          '01n': 'wi-night-clear',                # clear sky
@@ -61,12 +62,15 @@ class Weather(object):
 
     copyright_row = u'@SevastopolBoats'
 
+    sleep_time = 10
+
     def __init__(self, apikey=OWM_APIKEY):
         self.owm = pyowm.OWM(apikey, language='ru')
 
     def forecast(self, tommorow=None):
         """ Get tommorow 3h forecast for given times """
         day_str = '{date} %s:00:00+00'.format(date=tommorow or pyowm.timeutils.tomorrow().date())
+        # get forecast
         forecast = self.owm.three_hours_forecast_at_id(self.city_id)
         weather = [forecast.get_weather_at(day_str % hour) for hour in self.hours]
         return weather
@@ -79,14 +83,28 @@ class Weather(object):
                 day_time=self.day_times[index],
                 temp=weather.get_temperature(self.temperature_format)['temp'],
                 icon=weather.get_weather_icon_name(),
-                wind=weather.get_wind(), ))
+                # wind=weather.get_wind(),
+        ))
         return weather_data
+
+    def safe_forecast(self, tomorrow=None):
+        attemps = 10
+        while attemps:
+            try:
+                forecast = self.forecast(tomorrow)
+                return forecast
+            except:
+                attemps -= 1
+                time.sleep(self.sleep_time)
+                forecast = None
+        assert forecast
+        return forecast
 
     def get_text(self):
         """ Return weather in text human readeble """
         tomorrow = pyowm.timeutils.tomorrow().date()
         date_title = u'{day} {month}'.format(day=tomorrow.day, month=self.months[tomorrow.month - 1])
-        weather_data = self.get_data(self.forecast(tomorrow))
+        weather_data = self.get_data(self.safe_forecast(tomorrow))
         return date_title, weather_data
 
     def get_font_path(self, font_name):
@@ -137,16 +155,16 @@ class Weather(object):
         drawing.text(
             (WIDTH - width - SPACE, HEIGHT - height - BLANK_LINE),
             self.copyright_row, font=little_font, fill=color(128))
-        return text_layer
+        return text_layer, date_title
 
     def draw_img(self):
         """ Merge background and text layer and save """
         # get an image
-        background = Image.open('800x500.png').convert('RGBA')
+        # background = Image.open('800x500.png').convert('RGBA')
         background = Image.new('RGBA', (800, 500), (200, 200, 200, 255))
         # draw text layer
-        text_layer = self.draw_img_weather()
+        text_layer, date_title = self.draw_img_weather()
         text_layer.thumbnail(background.size, Image.BICUBIC)
         result = Image.alpha_composite(background, text_layer)
-        return result
+        return result, date_title
         # result.save('out.png', format='PNG')

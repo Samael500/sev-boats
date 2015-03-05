@@ -50,6 +50,14 @@ def middaygun_msg():
     return twitter.post_tweet(message)
 
 
+@scheduler.scheduled_job('cron', hour='18', minute='0', second='5', id='weather')
+@logger
+def weather_msg():
+    """ Post weather messages """
+    print 'weather: message'
+    return twitter.post_image_weather()
+
+
 @scheduler.scheduled_job('cron', hour='6-22', minute='15,45', id='ship_status')
 @logger
 def ship_status_msg():

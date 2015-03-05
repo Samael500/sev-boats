@@ -1,8 +1,12 @@
 # -*- coding: utf-8 -*-
 # import pyowm
-from src.weather import Weather
+# from src.weather import Weather
+from src.twitter import Twitter
 
-weth = Weather()
+# weth = Weather()
+t = Twitter()
+
+t.post_image_weather()
 
 # # print dir(weth.owm)
 
@@ -22,6 +26,6 @@ weth = Weather()
 
 
 
-out = weth.draw_img()
+# out = weth.draw_img()
 
-out.save('out.png', format='PNG')
+# out.save('out.png', format='PNG')

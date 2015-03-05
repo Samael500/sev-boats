@@ -2,6 +2,8 @@
 
 from settings import TWITTER_OAUTH_INFO
 from twython import Twython, TwythonError
+from weather import Weather
+from StringIO import StringIO
 
 import datetime
 import time
@@ -12,6 +14,7 @@ class Twitter(object):
     """ Class for twitter use """
 
     query_string = '#севастополь -украина OR северная OR катер OR SevastopolBoats OR sevboats :) since:%s lang:ru'
+    weather_string = u'#погода на %s.'
     timelimit = 90
     max_follow = 100
 
@@ -115,3 +118,15 @@ class Twitter(object):
             next_cursor = fids['next_cursor_str']
             time.sleep(self.timelimit)
         return friends_ids
+
+    def post_image_weather(self):
+        """ Create weather image and post to twitter """
+        # get weather image
+        weth = Weather()
+        weather_img, date_title = weth.draw_img()
+        # create stream
+        image_io = StringIO()
+        weather_img.save(image_io, format='PNG')
+        image_io.seek(0)
+        # post tweet
+        return self.twitter.update_status_with_media(media=image_io, status=self.weather_string % date_title)
