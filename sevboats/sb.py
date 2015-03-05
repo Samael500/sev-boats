@@ -1,10 +1,24 @@
-# from src.engine import *
-# from src.engine import _update_ais_data, _update_ais_lastpos
-# from src.coordinates import Coordinates
+import pyowm
+from src.weather import Weather
 
-# initial()
-# _update_ais_data()
-# _update_ais_lastpos()
+weth = Weather()
 
-# SlL.fleet().print_ships(True)
-# print 'on routes: ', check_ships_on_routes()
+# print dir(weth.owm)
+
+# print dir(tomorrow)
+
+
+day = '{date} %d:00:00+00'.format(date=pyowm.timeutils.tomorrow().date())
+
+
+
+# wf = weth.forecast()
+
+# for w in wf:
+#     print w
+#     print w.get_wind()
+
+
+weth.get_text()
+
+#get_weather_at(tomorrow).to_XML()
