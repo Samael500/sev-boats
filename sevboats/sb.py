@@ -1,12 +1,13 @@
 # -*- coding: utf-8 -*-
+import settings
 # import pyowm
 # from src.weather import Weather
-from src.twitter import Twitter
+# from src.twitter import Twitter
 
-# weth = Weather()
-t = Twitter()
+# # weth = Weather()
+# t = Twitter()
 
-t.post_image_weather()
+# t.post_image_weather()
 
 # # print dir(weth.owm)
 
@@ -29,3 +30,8 @@ t.post_image_weather()
 # out = weth.draw_img()
 
 # out.save('out.png', format='PNG')
+
+
+from src.engine import send_fleet_message
+
+print send_fleet_message()

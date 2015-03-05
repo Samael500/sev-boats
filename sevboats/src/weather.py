@@ -65,7 +65,7 @@ class Weather(object):
     sleep_time = 10
 
     def __init__(self, apikey=OWM_APIKEY):
-        self.owm = pyowm.OWM(apikey, language='ru')
+        self.owm = pyowm.OWM(apikey)
 
     def forecast(self, tommorow=None):
         """ Get tommorow 3h forecast for given times """
@@ -93,7 +93,8 @@ class Weather(object):
             try:
                 forecast = self.forecast(tomorrow)
                 return forecast
-            except:
+            except Exception as e:
+                print e
                 attemps -= 1
                 time.sleep(self.sleep_time)
                 forecast = None

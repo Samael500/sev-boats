@@ -24,7 +24,6 @@ logging.basicConfig(level=logging.INFO)
 
 # def functions
 
-
 def logger(function):
 
     def wrapper():
@@ -50,7 +49,7 @@ def middaygun_msg():
     return twitter.post_tweet(message)
 
 
-@scheduler.scheduled_job('cron', hour='18', minute='0', second='5', id='weather')
+@scheduler.scheduled_job('cron', hour='19', minute='0', second='5', id='weather')
 @logger
 def weather_msg():
     """ Post weather messages """

@@ -122,11 +122,14 @@ class Twitter(object):
     def post_image_weather(self):
         """ Create weather image and post to twitter """
         # get weather image
+        print 'start'
         weth = Weather()
         weather_img, date_title = weth.draw_img()
         # create stream
+        print 'streem'
         image_io = StringIO()
         weather_img.save(image_io, format='PNG')
         image_io.seek(0)
         # post tweet
+        print 'post'
         return self.twitter.update_status_with_media(media=image_io, status=self.weather_string % date_title)
