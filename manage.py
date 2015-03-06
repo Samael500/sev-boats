@@ -8,6 +8,7 @@ import logging
 from colorama import Fore
 from datetime import datetime
 from apscheduler.schedulers.blocking import BlockingScheduler
+from daemon import Daemon
 
 import sevboats
 
@@ -73,11 +74,33 @@ def ship_status_msg():
         return dict(text=Fore.YELLOW + message)
 
 
-if __name__ == '__main__':
-    # print (sys.argv)
-    print 'Press Ctrl+C to exit'
-    ship_status_msg()
-    try:
+class SevboatsDaemon(Daemon):
+
+    pidfile_path = 'sevboats.pid'
+    # logfile_path = 'sevboats.log'
+
+    def __init__(self):
+        super(SevboatsDaemon, self).__init__(pidfile=self.pidfile_path)
+
+    def run(self):
+        print 'daemon run at:', datetime.now().strftime(date_format)
+        ship_status_msg()
         scheduler.start()
-    except (KeyboardInterrupt, SystemExit):
-        pass
+
+
+if __name__ == '__main__':
+    # init daemon
+    sev_daemon = SevboatsDaemon()
+
+    # run comand
+    if 'start' in sys.argv:
+        print 'start daemon: %s' % sev_daemon.pidfile_path
+        sev_daemon.start()
+    elif 'stop' in sys.argv:
+        print 'stop daemon: %s' % sev_daemon.pidfile_path
+        sev_daemon.stop()
+    elif 'restart' in sys.argv:
+        print 'restart daemon: %s' % sev_daemon.pidfile_path
+        sev_daemon.restart()
+    else:
+        print 'wrong choice - must be: *start*, *stop* or *restart*'
