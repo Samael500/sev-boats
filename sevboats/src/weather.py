@@ -136,7 +136,7 @@ class Weather(object):
         # calculate sizes
         WIDTH, HEIGHT = text_layer.size
         LEFT, RIGHT = 235, WIDTH - 235
-        LINE_HEIGHT, BLANK_LINE, SPACE = 85 * coef, 15 * coef, 35 * coef
+        LINE_HEIGHT, BLANK_LINE, SPACE = 85 * coef, 25 * coef, 35 * coef
         # define lambdas
         color = lambda alpha: (0, 191, 255, alpha)
         row = lambda number: LINE_HEIGHT * number + BLANK_LINE
