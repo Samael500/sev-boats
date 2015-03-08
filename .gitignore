@@ -58,3 +58,5 @@ venv/
 
 # settings local
 settings_local.py
+
+sevboats.pid
