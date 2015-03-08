@@ -26,7 +26,7 @@ class TestShip(unittest.TestCase):
         self.assertEquals(Ship.STATUS_DEAD_PING, 'DEAD_PING')
         self.assertEquals(Ship._STATUS_DEFAULT, Ship.STATUS_OFFLINE)
         # Constants used ship
-        self.assertEquals(Ship.DEAD_PING_TIMELIMIT, 35 * 60)
+        self.assertEquals(Ship.DEAD_PING_TIMELIMIT, 90 * 60)
         self.assertEquals(Ship.STOP_SPEED, 0.55)
         self.assertEquals(Ship.VIEWANGLE, 80)
         self.assertEquals(Ship.DELTA, 0.0025)
