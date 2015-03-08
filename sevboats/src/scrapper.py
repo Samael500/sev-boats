@@ -63,7 +63,7 @@ class Scrapper(object):
             url = self.ships_list_url.format(page=1)
             soup = BeautifulSoup(self.opener.open(url).read())
             # get page all count
-            page_all = soup.find('div', {'class': 'col-xs-6 page-nav'}).encode('utf-8')
+            page_all = soup.find('div', {'class': 'page-nav'}).encode('utf-8')
             pattern = re.compile(r'</form>.+of.+(\d+)<span')
             search = pattern.search(page_all)
             count = int(search.group(1)) if search else 1
@@ -79,8 +79,9 @@ class Scrapper(object):
             for row in raw_data:
                 if row.text.strip() in ships_mmsi:
                     data.append((row.text.strip().encode('utf-8'), row.find_parent('tr').find_all('td')))
-        except (AttributeError, urllib2.URLError):
+        except (AttributeError, urllib2.URLError) as err:
             data = None
+            print err
 
         if data is not None:
             for row in data:

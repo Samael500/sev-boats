@@ -1,10 +1,37 @@
-# from src.engine import *
-# from src.engine import _update_ais_data, _update_ais_lastpos
-# from src.coordinates import Coordinates
+# -*- coding: utf-8 -*-
+# import settings
+# import pyowm
+from src.weather import Weather
+# from src.twitter import Twitter
 
-# initial()
-# _update_ais_data()
-# _update_ais_lastpos()
+weth = Weather()
+# t = Twitter()
 
-# SlL.fleet().print_ships(True)
-# print 'on routes: ', check_ships_on_routes()
+# t.post_image_weather()
+
+# # print dir(weth.owm)
+
+# # print dir(tomorrow)
+
+
+# day = '{date} %d:00:00+00'.format(date=pyowm.timeutils.tomorrow().date())
+
+
+
+# # wf = weth.forecast()
+
+# # for w in wf:
+# #     print w
+# #     print w.get_wind()
+
+
+
+
+out, date_title = weth.draw_img()
+
+out.save('out.png', format='PNG')
+
+
+# from src.engine import send_fleet_message
+
+# print send_fleet_message()

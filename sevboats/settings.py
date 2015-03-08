@@ -20,6 +20,8 @@ TWITTER_OAUTH_INFO = dict(
     oauth_token='Access Token',
     oauth_token_secret='Access Token Secret', )
 
+OWM_APIKEY = 'Openweathermap api key'
+
 # if is debug
 DEBUG = False
 
