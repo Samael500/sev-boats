@@ -58,20 +58,20 @@ def weather_msg():
     return twitter.post_image_weather()
 
 
-@scheduler.scheduled_job('cron', hour='6-22', minute='15,45', id='ship_status')
-@logger
-def ship_status_msg():
-    """ Post ship status messages """
-    now = datetime.now()
-    minute = now.minute
-    hour = now.hour
-    status, change = sevboats.send_fleet_message()
-    message = ship_messenger.get_message(status)
-    if change or (not(hour % sevboats.settings.MESSAGE_PERIOD) and minute < 30):
-        print 'ship status:', message
-        return twitter.post_tweet(message)
-    else:
-        return dict(text=Fore.YELLOW + message)
+# @scheduler.scheduled_job('cron', hour='6-22', minute='15,45', id='ship_status')
+# @logger
+# def ship_status_msg():
+#     """ Post ship status messages """
+#     now = datetime.now()
+#     minute = now.minute
+#     hour = now.hour
+#     status, change = sevboats.send_fleet_message()
+#     message = ship_messenger.get_message(status)
+#     if change or (not(hour % sevboats.settings.MESSAGE_PERIOD) and minute < 30):
+#         print 'ship status:', message
+#         return twitter.post_tweet(message)
+#     else:
+#         return dict(text=Fore.YELLOW + message)
 
 
 class SevboatsDaemon(Daemon):
@@ -102,5 +102,12 @@ if __name__ == '__main__':
     elif 'restart' in sys.argv:
         print 'restart daemon: %s' % sev_daemon.pidfile_path
         sev_daemon.restart()
+    elif 'nodaemon' in sys.argv:
+        print 'Press Ctrl+C to exit'
+        ship_status_msg()
+        try:
+            scheduler.start()
+        except (KeyboardInterrupt, SystemExit):
+            pass
     else:
         print 'wrong choice - must be: *start*, *stop* or *restart*'
