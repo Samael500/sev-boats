@@ -84,7 +84,7 @@ class SevboatsDaemon(Daemon):
 
     def run(self):
         print 'daemon run at:', datetime.now().strftime(date_format)
-        ship_status_msg()
+        # ship_status_msg()
         scheduler.start()
 
 
@@ -104,7 +104,7 @@ if __name__ == '__main__':
         sev_daemon.restart()
     elif 'nodaemon' in sys.argv:
         print 'Press Ctrl+C to exit'
-        ship_status_msg()
+        # ship_status_msg()
         try:
             scheduler.start()
         except (KeyboardInterrupt, SystemExit):
