@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from PIL import Image, ImageDraw, ImageFont
+from random import choice
 from settings import OWM_APIKEY, DATA_DIR
 
 import pyowm
@@ -64,6 +65,8 @@ class Weather(object):
 
     sleep_time = 10
 
+    output_img_size = (800, 500)
+
     def __init__(self, apikey=OWM_APIKEY):
         self.owm = pyowm.OWM(apikey)
 
@@ -112,11 +115,16 @@ class Weather(object):
         """ Return file path to font file """
         return os.path.join(DATA_DIR, 'fonts', font_name)
 
+    def get_photos(self):
+        """ Return file path to photos dir """
+        path = os.path.join(DATA_DIR, 'photos')
+        return path, os.listdir(path)
+
     def draw_img_weather(self):
         """ Create image of weather """
         date_title, weather_data = self.get_text()
         # make a blank image for the text, initialized to transparent text color
-        text_layer = Image.new('RGBA', (1600, 1000), (255, 255, 255, 0))
+        text_layer = Image.new('RGBA', (1600, 1000), (0, 0, 0, 75))
         # scalable coeff
         coef = 2
         # open fonts
@@ -158,14 +166,22 @@ class Weather(object):
             self.copyright_row, font=little_font, fill=color(128))
         return text_layer, date_title
 
+    def get_background(self):
+        """ Get img background """
+        path, photos = self.get_photos()
+        photo = os.path.join(path, choice(photos))
+        background = Image.open(photo).convert('RGBA')
+        return background
+
     def draw_img(self):
         """ Merge background and text layer and save """
-        # get an image
-        # background = Image.open('800x500.png').convert('RGBA')
-        background = Image.new('RGBA', (800, 500), (200, 200, 200, 255))
+        # get an image background
+        background = self.get_background()
         # draw text layer
         text_layer, date_title = self.draw_img_weather()
-        text_layer.thumbnail(background.size, Image.BICUBIC)
-        result = Image.alpha_composite(background, text_layer)
+        # resize images
+        text_resize = text_layer.resize(self.output_img_size, Image.BICUBIC)
+        back_resize = background.resize(self.output_img_size, Image.BICUBIC)
+        # merge text with background
+        result = Image.alpha_composite(back_resize, text_resize)
         return result, date_title
-        # result.save('out.png', format='PNG')
