@@ -128,7 +128,7 @@ class Twitter(object):
         # create stream
         print 'streem'
         image_io = StringIO()
-        weather_img.save(image_io, format='PNG')
+        weather_img.save(image_io, format='JPEG', quality=100, subsampling=0, optimize=True, progressive=True)
         image_io.seek(0)
         # post tweet
         print 'post'
