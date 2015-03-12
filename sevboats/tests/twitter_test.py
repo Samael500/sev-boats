@@ -9,7 +9,7 @@ class TestTwitter(unittest.TestCase):
 
     """ Test twitter class """
 
-    @unittest.skipIf(DEBUG, "Don't test when debug")
+    @unittest.skipIf(DEBUG or True, "Don't test when debug")
     def setUp(self):
         self.twitter = Twitter()
         # set query string

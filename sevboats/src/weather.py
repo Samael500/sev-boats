@@ -65,7 +65,7 @@ class Weather(object):
 
     sleep_time = 10
 
-    output_img_size = (1120, 700)
+    output_img_size = (800, 500)  # (1120, 700)
 
     def __init__(self, apikey=OWM_APIKEY):
         self.owm = pyowm.OWM(apikey)
