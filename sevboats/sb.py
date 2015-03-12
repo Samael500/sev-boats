@@ -29,7 +29,8 @@ weth = Weather()
 
 out, date_title = weth.draw_img()
 
-out.save('out.jpg', format='JPEG', quality=100, subsampling=0, optimize=True, progressive=True)
+# out.save('out.jpg', format='JPEG', quality=100, subsampling=0, optimize=True, progressive=True)
+out.save('out.png', format='PNG')
 
 
 # from src.engine import send_fleet_message

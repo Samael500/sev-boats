@@ -162,7 +162,7 @@ class Weather(object):
         # draw copyright row
         width, height = drawing.textsize(self.copyright_row, font=little_font)
         drawing.text(
-            (WIDTH - width - SPACE, HEIGHT - height - BLANK_LINE),
+            (WIDTH - width - SPACE // 2, HEIGHT - height - BLANK_LINE // 2),
             self.copyright_row, font=little_font, fill=color(128))
         return text_layer, date_title
 
