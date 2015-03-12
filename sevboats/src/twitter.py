@@ -14,7 +14,7 @@ class Twitter(object):
     """ Class for twitter use """
 
     query_string = '#севастополь -украина OR северная OR катер OR SevastopolBoats OR sevboats :) since:%s lang:ru'
-    weather_string = u'#погода на %s.'
+    weather_string = u'#погода в Севастополе на %s.'
     timelimit = 90
     max_follow = 100
 
