@@ -91,7 +91,7 @@ class Weather(object):
         return weather_data
 
     def safe_forecast(self, tomorrow=None):
-        attemps = 10
+        attemps = 50
         while attemps:
             try:
                 forecast = self.forecast(tomorrow)
